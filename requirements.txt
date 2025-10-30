@@ -1,0 +1,39 @@
+# Google ADK Core
+google-genai>=1.17.0
+google-cloud-aiplatform>=1.70.0
+
+# FastAPI and Web Framework
+fastapi==0.115.0
+uvicorn[standard]==0.31.0
+python-multipart==0.0.12
+pydantic==2.9.2
+pydantic-settings==2.5.2
+
+# WebSocket Support
+websockets==13.1
+python-socketio==5.11.4
+
+# Model Context Protocol (MCP)
+mcp>=0.9.0
+
+# Additional AI/ML Tools
+litellm>=1.48.0
+openai>=1.51.0
+
+# Database and Caching (optional)
+redis>=5.1.0
+sqlalchemy>=2.0.35
+
+# Monitoring and Logging
+prometheus-client>=0.21.0
+python-json-logger>=2.0.7
+
+# Development Tools
+pytest>=8.3.3
+pytest-asyncio>=0.24.0
+black>=24.10.0
+ruff>=0.7.0
+httpx>=0.27.2
+
+# Environment Management
+python-dotenv>=1.0.1

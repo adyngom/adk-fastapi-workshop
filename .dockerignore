@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.template
+.git/
+.pytest_cache/
+*.egg-info/
+README.md
+setup_adk_workshop.sh
+*.db
