@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADK Workshop - Chat Demo</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -47,6 +48,45 @@
         }
         .user { background: #E0F2FE; margin-left: auto; }
         .assistant { background: #F1F5F9; }
+
+        /* Markdown styling in messages */
+        .assistant h1, .assistant h2, .assistant h3 {
+            margin-top: 12px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .assistant h1 { font-size: 1.25em; }
+        .assistant h2 { font-size: 1.1em; }
+        .assistant h3 { font-size: 1em; }
+        .assistant ul, .assistant ol {
+            margin-left: 20px;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+        .assistant li { margin-bottom: 4px; }
+        .assistant p { margin-bottom: 8px; }
+        .assistant code {
+            background: #e5e7eb;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .assistant pre {
+            background: #1f2937;
+            color: #f9fafb;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            margin: 8px 0;
+        }
+        .assistant pre code {
+            background: none;
+            color: inherit;
+            padding: 0;
+        }
+        .assistant strong { font-weight: 600; }
+        .assistant em { font-style: italic; }
         .input-area {
             padding: 20px;
             border-top: 1px solid #e5e7eb;
@@ -141,11 +181,23 @@
         function appendMessage(text, role, isChunk = false) {
             const lastMsg = messagesDiv.lastElementChild;
             if (isChunk && lastMsg && lastMsg.classList.contains('assistant')) {
-                lastMsg.textContent += text;
+                // Append to existing message
+                const currentText = lastMsg.getAttribute('data-raw-text') || '';
+                const newText = currentText + text;
+                lastMsg.setAttribute('data-raw-text', newText);
+                // Render markdown
+                lastMsg.innerHTML = marked.parse(newText);
             } else {
                 const div = document.createElement('div');
                 div.className = `message ${role}`;
-                div.textContent = text;
+                if (role === 'assistant') {
+                    // Store raw text and render markdown
+                    div.setAttribute('data-raw-text', text);
+                    div.innerHTML = marked.parse(text);
+                } else {
+                    // User messages as plain text
+                    div.textContent = text;
+                }
                 messagesDiv.appendChild(div);
             }
             messagesDiv.scrollTop = messagesDiv.scrollHeight;
