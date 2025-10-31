@@ -25,11 +25,12 @@ class AgentManager:
             adk_agents_path = Path(__file__).parent.parent / "adk_agents"
             sys.path.insert(0, str(adk_agents_path))
 
-            # Load greeting_agent from adk_agents/
+            # Load ADK agents from adk_agents/
             await self._load_adk_agent("greeting_agent")
+            await self._load_adk_agent("news_pipeline")
 
             logger.info("Agent manager initialized successfully")
-            logger.info(f"Loaded {len(self.agents)} ADK agents")
+            logger.info(f"Loaded {len(self.agents)} ADK agents: {list(self.agents.keys())}")
         except Exception as e:
             logger.error(f"Failed to initialize agent manager: {str(e)}")
             raise

@@ -78,7 +78,13 @@
     <div class="container">
         <div class="header">
             <h1>🤖 ADK Workshop Chat</h1>
-            <div class="status" id="status">Connecting...</div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <select id="agentSelect" style="padding: 8px; border-radius: 4px; border: 1px solid #d1d5db; background: white;">
+                    <option value="greeting_agent">Greeting Agent</option>
+                    <option value="news_pipeline">News Pipeline</option>
+                </select>
+                <div class="status" id="status">Connecting...</div>
+            </div>
         </div>
         <div class="messages" id="messages"></div>
         <div class="input-area">
@@ -92,6 +98,7 @@
         const messageInput = document.getElementById('messageInput');
         const sendBtn = document.getElementById('sendBtn');
         const statusDiv = document.getElementById('status');
+        const agentSelect = document.getElementById('agentSelect');
         
         let ws = null;
         const sessionId = 'session_' + Date.now();
@@ -148,8 +155,9 @@
             const message = messageInput.value.trim();
             if (!message || !ws || ws.readyState !== WebSocket.OPEN) return;
 
+            const selectedAgent = agentSelect.value;
             appendMessage(message, 'user');
-            ws.send(JSON.stringify({ message, agent: 'greeting_agent' }));
+            ws.send(JSON.stringify({ message, agent: selectedAgent }));
             messageInput.value = '';
         }
 
