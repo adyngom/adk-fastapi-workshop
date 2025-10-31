@@ -28,6 +28,7 @@ class AgentManager:
             # Load ADK agents from adk_agents/
             await self._load_adk_agent("greeting_agent")
             await self._load_adk_agent("news_pipeline")
+            await self._load_adk_agent("competitive_analysis")
 
             logger.info("Agent manager initialized successfully")
             logger.info(f"Loaded {len(self.agents)} ADK agents: {list(self.agents.keys())}")
