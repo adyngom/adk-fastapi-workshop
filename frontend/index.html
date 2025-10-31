@@ -147,9 +147,9 @@
         function sendMessage() {
             const message = messageInput.value.trim();
             if (!message || !ws || ws.readyState !== WebSocket.OPEN) return;
-            
+
             appendMessage(message, 'user');
-            ws.send(JSON.stringify({ message, agent: 'default' }));
+            ws.send(JSON.stringify({ message, agent: 'greeting_agent' }));
             messageInput.value = '';
         }
 

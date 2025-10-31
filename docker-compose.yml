@@ -16,6 +16,7 @@ services:
       - ./api:/app/api
       - ./tools:/app/tools
       - ./config:/app/config
+      - ./adk_agents:/app/adk_agents
     depends_on:
       - redis
     networks:
