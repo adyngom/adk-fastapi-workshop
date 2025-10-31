@@ -2,8 +2,7 @@
 News Analysis Pipeline - Exercise 2
 Demonstrates sequential multi-agent workflow with state passing
 """
-from google.adk.agents import Agent
-from google.adk.agents.workflows import SequentialAgent
+from google.adk.agents import Agent, SequentialAgent
 from google.adk.tools import google_search
 
 # Agent 1: News Gatherer
