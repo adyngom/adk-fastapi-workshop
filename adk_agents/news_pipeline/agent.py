@@ -11,5 +11,6 @@ from news_pipeline.sub_agents.sentiment_analyzer.agent import root_agent as sent
 # Gatherer finds news -> Summarizer condenses -> Analyzer evaluates sentiment
 root_agent = SequentialAgent(
     name="news_analysis_pipeline",
-    agents=[news_gatherer, summarizer, sentiment_analyzer]
+    description="Sequential news analysis: gather, summarize, analyze sentiment",
+    sub_agents=[news_gatherer, summarizer, sentiment_analyzer]
 )
