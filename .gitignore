@@ -316,8 +316,14 @@ grafana-data/
 mcp/data/
 mcp/cache/
 
+# MCP configuration files (local only)
+.mcp_*.json
+
 # Claude Code settings (local only)
 .claude/settings.local.json
+
+# Internal documentation (not for attendees)
+docs/
 
 # AI/ML models (if you download any)
 models/

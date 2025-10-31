@@ -195,6 +195,27 @@ docker compose down
    - Click "Execute"
    - You should get a 200 response: `{"status": "healthy"}`
 
+### 4.4 Explore ADK Web Interface (Developer View)
+
+1. **Open**: http://localhost/adk or http://localhost:3002
+2. **You should see**: ADK Web Interface with tabs
+3. **Test the interface**:
+   - Send message: "Hello! I'm attending the ADK workshop"
+   - Click **Events** tab (top of interface)
+   - Watch events appear in real-time:
+     - `agent_start`
+     - `agent_response`
+     - `agent_end`
+   - Click on any event to expand and see details
+
+✅ **If you see events populating, ADK Web is working!**
+
+**What is ADK Web?**
+- Developer debugging interface from Google
+- See every step your agent takes
+- Inspect requests, responses, and tool calls
+- Perfect for understanding how agents work
+
 ---
 
 ## ⚠️ Troubleshooting
@@ -321,6 +342,8 @@ Before the workshop starts, verify you can do all of these:
 - [ ] Chat UI status shows "Connected" (green)
 - [ ] You can send a message and get a streaming response
 - [ ] http://localhost:8000/docs shows API documentation
+- [ ] http://localhost/adk shows ADK Web interface
+- [ ] ADK Web Events tab shows agent activity
 - [ ] No error messages in `docker compose logs`
 
 ---

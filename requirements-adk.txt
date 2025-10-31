@@ -1,0 +1,6 @@
+# Google ADK Core (for ADK Web Interface)
+google-adk>=1.17.0
+google-genai>=1.17.0
+
+# Environment Management
+python-dotenv>=1.0.1
