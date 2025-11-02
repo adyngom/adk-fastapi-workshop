@@ -24,13 +24,29 @@ A production-ready AI agent system with **three interfaces**:
 
 ## ⚡ Quick Start
 
-### Prerequisites
+### Option 1: Google IDX (Recommended - 5 minutes) 🆕
 
+**No installation needed!** Run everything in your browser.
+
+[![Open in IDX](https://cdn.idx.dev/btn/open_dark_32@2x.png)](https://idx.google.com/import?url=https://github.com/adyngom/adk-fastapi-workshop)
+
+1. Click button above
+2. Wait for setup (~60 seconds)
+3. Add your API key to `.env`
+4. Services start automatically!
+
+**See**: [IDX Setup Guide](./IDX-SETUP-GUIDE.md) for details
+
+---
+
+### Option 2: Local Docker (Traditional - 15 minutes)
+
+**Prerequisites**:
 - Docker Desktop installed and running
 - Google Cloud account (free tier)
 - Gemini API key from [AI Studio](https://aistudio.google.com/apikey)
 
-### Setup (15 minutes)
+### Setup
 
 1. **Clone the repository**:
    ```bash
