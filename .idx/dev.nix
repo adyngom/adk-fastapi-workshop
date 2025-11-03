@@ -36,21 +36,67 @@
     # Workspace configuration
     workspace = {
       # Auto-install Python dependencies on workspace load
+      # Note: If this fails, students can run ./.idx/manual-setup.sh
       onCreate = {
         install-deps = ''
-          python -m venv .venv
+          set -e  # Exit on error
+          echo "🔧 Setting up Python environment..."
+
+          python -m venv .venv || {
+            echo "❌ Failed to create virtual environment"
+            echo "💡 Run: ./.idx/manual-setup.sh"
+            exit 1
+          }
+
           source .venv/bin/activate
-          pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install -r requirements-adk.txt
+
+          pip install --upgrade pip --quiet || {
+            echo "⚠️ pip upgrade failed, continuing..."
+          }
+
+          pip install -r requirements.txt --quiet || {
+            echo "❌ Failed to install requirements.txt"
+            echo "💡 Run: ./.idx/manual-setup.sh"
+            exit 1
+          }
+
+          pip install -r requirements-adk.txt --quiet || {
+            echo "❌ Failed to install ADK requirements"
+            echo "💡 Run: ./.idx/manual-setup.sh"
+            exit 1
+          }
+
+          echo "✅ Dependencies installed successfully"
         '';
 
         # Create .env from template if not exists
         setup-env = ''
           if [ ! -f .env ]; then
             cp .env.template .env
-            echo "📝 Created .env file - Please add your GOOGLE_API_KEY"
+            echo "📝 Created .env file from template"
+            echo "⚠️  IMPORTANT: Add your GOOGLE_API_KEY to .env"
+            echo "   Get key: https://aistudio.google.com/apikey"
+          else
+            echo "✅ .env file already exists"
           fi
+        '';
+
+        # Show recovery instructions if onCreate fails
+        show-recovery = ''
+          echo ""
+          echo "═══════════════════════════════════════════════════════"
+          echo "🚀 ADK Workshop Setup"
+          echo "═══════════════════════════════════════════════════════"
+          echo ""
+          echo "If onCreate didn't complete, run:"
+          echo "  ./.idx/manual-setup.sh"
+          echo ""
+          echo "Then start services:"
+          echo "  ./.idx/start-services.sh"
+          echo ""
+          echo "Need help? See: .idx/TROUBLESHOOTING.md"
+          echo "═══════════════════════════════════════════════════════"
+          echo ""
         '';
       };
 

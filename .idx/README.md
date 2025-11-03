@@ -40,11 +40,21 @@ This folder contains configuration for running the ADK FastAPI Workshop in Googl
 
 ### When Student Opens in IDX
 
+#### Happy Path (onCreate works)
 1. **Clone happens automatically** (via Open in IDX button)
 2. **onCreate runs** (installs dependencies)
 3. **onStart runs** (starts services)
 4. **Student adds API key** (only manual step)
 5. **Ready to code!** (< 5 minutes)
+
+#### Recovery Path (onCreate fails or manual clone)
+1. **Student manually cloned** (2FA, permissions, etc.)
+2. **Run recovery script**: `./.idx/manual-setup.sh` (~2 minutes)
+3. **Student adds API key** (30 seconds)
+4. **Start services**: `./.idx/start-services.sh` (10 seconds)
+5. **Ready to code!** (still < 5 minutes)
+
+**Key insight**: Even when onCreate fails, we have a fast recovery path that doesn't break our 5-minute promise.
 
 ### Service Architecture in IDX
 
@@ -92,6 +102,40 @@ onStart = {
 ---
 
 ## 🐛 Troubleshooting
+
+### onCreate Failed or Incomplete
+
+**Symptom**: No `.venv` folder, or workspace seems empty
+
+**Quick Fix**:
+```bash
+# Run the manual setup script
+./.idx/manual-setup.sh
+
+# Then start services
+./.idx/start-services.sh
+```
+
+**Time**: Still under 5 minutes!
+
+See detailed guide: `.idx/TROUBLESHOOTING.md`
+
+---
+
+### Manually Cloned Repository
+
+**Symptom**: Had to clone via git instead of "Open in IDX" button
+
+**Quick Fix**:
+```bash
+# Same recovery path works
+./.idx/manual-setup.sh
+./.idx/start-services.sh
+```
+
+**This is actually fine!** Manual clone + recovery script is often faster than waiting for onCreate.
+
+---
 
 ### Services not starting
 
@@ -141,21 +185,46 @@ source .venv/bin/activate
 ✅ **No installation issues** - Works in browser
 ✅ **Focus on content** - Not troubleshooting Docker
 ✅ **Accessible** - Works on Chromebooks, tablets
+✅ **Recovery path** - Even onCreate failures resolve in < 5 minutes
 
 ### Setup Checklist
 
 Before workshop:
 - [ ] Test "Open in IDX" button
-- [ ] Verify all services start correctly
+- [ ] Test manual-setup.sh recovery path
 - [ ] Test with fresh Google account
+- [ ] Test with 2FA-enabled account (manual clone scenario)
+- [ ] Verify all services start correctly
 - [ ] Check port forwarding works
-- [ ] Prepare backup local environment
+- [ ] Print/share TROUBLESHOOTING.md with TAs
 
 During workshop:
 - [ ] Share IDX template URL
+- [ ] **Also share**: "If onCreate fails, run ./.idx/manual-setup.sh"
 - [ ] Guide through API key setup
 - [ ] Verify everyone sees all 3 interfaces
-- [ ] Have troubleshooting ready
+- [ ] Have TAs ready with recovery script command
+
+### Handling onCreate Failures
+
+**What you'll see**: Some students (10-20%) may have onCreate failures due to:
+- Network timeouts
+- GitHub 2FA requiring manual clone
+- IDX platform hiccups
+- First-time IDX users
+
+**Don't panic!** This is expected and we have a solution:
+
+**Student says**: "onCreate didn't finish" or "I manually cloned"
+**You say**: "No problem! Run this command:"
+```bash
+./.idx/manual-setup.sh
+```
+
+**Time to recovery**: 2-3 minutes (still hitting our 5-minute target)
+
+**Key message to students**:
+> "onCreate is an optimization, not a requirement. The manual setup script does the same thing, just on-demand. Either path gets you coding in under 5 minutes."
 
 ---
 

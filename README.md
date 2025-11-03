@@ -30,12 +30,27 @@ A production-ready AI agent system with **three interfaces**:
 
 [![Open in IDX](https://cdn.idx.dev/btn/open_dark_32@2x.png)](https://idx.google.com/import?url=https://github.com/adyngom/adk-fastapi-workshop)
 
+#### Happy Path (onCreate works)
 1. Click button above
 2. Wait for setup (~60 seconds)
 3. Add your API key to `.env`
 4. Services start automatically!
 
-**See**: [IDX Setup Guide](./IDX-SETUP-GUIDE.md) for details
+#### Recovery Path (onCreate failed or manual clone)
+```bash
+# Run this if onCreate didn't complete:
+./.idx/manual-setup.sh
+
+# Then start services:
+./.idx/start-services.sh
+```
+
+**Still under 5 minutes!** Even with onCreate failures.
+
+**Resources**:
+- 📖 [Quick Start Card](./.idx/QUICK-START.md) - One-page reference
+- 🆘 [Troubleshooting Guide](./.idx/TROUBLESHOOTING.md) - Fix common issues
+- 📚 [IDX Setup Details](./.idx/README.md) - Complete documentation
 
 ---
 
