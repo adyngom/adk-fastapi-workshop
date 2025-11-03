@@ -383,6 +383,12 @@ api_keys.txt
 tokens.txt
 passwords.txt
 
+# Automation data (contains PII)
+automation/registrations*.csv
+automation/*_results.json
+automation/.env
+automation/logs/
+
 # ============================================
 # Miscellaneous
 # ============================================
