@@ -54,16 +54,16 @@
             echo "⚠️ pip upgrade failed, continuing..."
           }
 
-          pip install -r requirements.txt --quiet || {
-            echo "❌ Failed to install requirements.txt"
-            echo "💡 Run: ./.idx/manual-setup.sh"
-            exit 1
-          }
-
+          # Install ADK first (primary use case)
           pip install -r requirements-adk.txt --quiet || {
             echo "❌ Failed to install ADK requirements"
             echo "💡 Run: ./.idx/manual-setup.sh"
             exit 1
+          }
+
+          # Then add FastAPI without version constraints (avoid Starlette conflicts)
+          pip install fastapi uvicorn python-multipart websockets redis pydantic-settings --quiet || {
+            echo "⚠️ FastAPI installation had issues, continuing..."
           }
 
           echo "✅ Dependencies installed successfully"

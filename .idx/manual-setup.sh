@@ -53,9 +53,14 @@ echo "   Upgrading pip..."
 pip install --upgrade pip --quiet
 
 # Install dependencies
-echo "   Installing dependencies (this takes ~60 seconds)..."
-pip install -r requirements.txt --quiet
+# Note: requirements.txt has conflicts (ADK vs FastAPI Starlette versions)
+# In IDX single environment, install requirements-adk.txt first, then add FastAPI deps
+echo "   Installing ADK dependencies (~30 seconds)..."
 pip install -r requirements-adk.txt --quiet
+
+echo "   Installing FastAPI and supporting libraries (~30 seconds)..."
+# Install FastAPI deps without version pinning to avoid conflicts with ADK
+pip install fastapi uvicorn python-multipart websockets redis pydantic-settings --quiet
 
 echo "✅ Python dependencies installed"
 
