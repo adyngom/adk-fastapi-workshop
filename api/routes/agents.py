@@ -41,14 +41,33 @@ async def list_agents():
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat_with_agent(request: ChatRequest):
-    """Send a message to an agent and get response"""
+    """Send a message to an agent and get non-streaming response"""
+    if not _agent_manager:
+        raise HTTPException(status_code=503, detail="Agent manager not initialized")
+
     try:
-        # TODO: Implementation will use agent_manager
+        # Use agent manager to get response
+        # For REST endpoint, collect all chunks into one response
+        full_message = ""
+        session_id = request.session_id or f"rest_{id(request)}"
+
+        async for chunk in _agent_manager.stream_chat(
+            session_id=session_id,
+            message=request.message,
+            agent_name=request.agent or "greeting_agent"
+        ):
+            if chunk.get("type") == "chunk":
+                full_message += chunk.get("content", "")
+            elif chunk.get("error"):
+                raise HTTPException(status_code=500, detail=chunk["error"])
+
         return ChatResponse(
-            message="This is a non-streamed response from the agent.",
-            agent=request.agent or "default",
-            session_id=request.session_id or "session-id-http"
+            message=full_message,
+            agent=request.agent or "greeting_agent",
+            session_id=session_id
         )
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Chat error: {str(e)}")
         raise HTTPException(status_code=500, detail=str(e))

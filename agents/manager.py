@@ -129,45 +129,59 @@ class AgentManager:
             # Just pass the user message
             full_response = ""
 
+            # Use genai directly with agent's configuration
+            # ADK agents are declarative - we extract their config and execute
+            from google import genai
+            from google.genai import types
+
             try:
-                # Use ADK agent's built-in streaming (handles tools automatically)
-                # ADK agents use their instruction and tools internally
-                from google.adk.runners import run_agent
-
-                # Create context with message
-                context = {"user_message": message}
-
-                # Run agent asynchronously with streaming
-                async for event in run_agent(adk_agent, context=context, stream=True):
-                    # Handle different event types from ADK
-                    if hasattr(event, 'text') and event.text:
-                        full_response += event.text
-                        yield {
-                            "type": "chunk",
-                            "content": event.text,
-                            "agent": agent_name
-                        }
-                    elif hasattr(event, 'tool_call'):
-                        # Show tool execution to user
-                        yield {
-                            "type": "chunk",
-                            "content": f"\n[Calling tool: {event.tool_call.name}]\n",
-                            "agent": agent_name
-                        }
-
-            except Exception as e:
-                logger.error(f"ADK agent execution error: {str(e)}")
-                # Fallback to direct genai call if ADK streaming fails
-                from google import genai
                 client = genai.Client(api_key=settings.google_api_key)
 
-                response = await client.aio.models.generate_content_stream(
-                    model=adk_agent.model,
-                    contents=[{"role": "user", "parts": [{"text": message}]}],
-                    config={"tools": adk_agent.tools} if hasattr(adk_agent, 'tools') and adk_agent.tools else None
+                # Build the content with agent's instruction as system
+                contents = []
+
+                # Add history if exists
+                if self.sessions[session_id]:
+                    contents = self.sessions[session_id].copy()
+
+                # Add new user message with current date context
+                from datetime import datetime
+                current_date = datetime.now().strftime("%B %d, %Y")
+
+                # First message includes date context
+                if not self.sessions[session_id]:
+                    message_with_context = f"Today's date is {current_date}.\n\nUser question: {message}"
+                else:
+                    message_with_context = message
+
+                contents.append(types.Content(
+                    role="user",
+                    parts=[types.Part(text=message_with_context)]
+                ))
+
+                # Prepare config for tools (if agent has them)
+                config = None
+                if hasattr(adk_agent, 'tools') and adk_agent.tools:
+                    config = types.GenerateContentConfig(
+                        system_instruction=adk_agent.instruction if hasattr(adk_agent, 'instruction') else None,
+                        tools=adk_agent.tools
+                    )
+                elif hasattr(adk_agent, 'instruction'):
+                    config = types.GenerateContentConfig(
+                        system_instruction=adk_agent.instruction
+                    )
+
+                # Get model name
+                model_name = adk_agent.model if hasattr(adk_agent, 'model') else "gemini-2.0-flash-exp"
+
+                # Stream response (await the coroutine first)
+                response_stream = await client.aio.models.generate_content_stream(
+                    model=model_name,
+                    contents=contents,
+                    config=config
                 )
 
-                async for chunk in response:
+                async for chunk in response_stream:
                     if chunk.text:
                         full_response += chunk.text
                         yield {
@@ -175,6 +189,14 @@ class AgentManager:
                             "content": chunk.text,
                             "agent": agent_name
                         }
+
+            except Exception as e:
+                logger.error(f"Agent execution error: {str(e)}")
+                yield {
+                    "type": "chunk",
+                    "content": f"Error: {str(e)}",
+                    "agent": agent_name
+                }
 
             # Store in session history
             self.sessions[session_id].append({

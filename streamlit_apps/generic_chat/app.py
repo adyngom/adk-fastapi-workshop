@@ -42,6 +42,8 @@ if "messages" not in st.session_state:
 if "session_id" not in st.session_state:
     import time
     st.session_state.session_id = f"streamlit_{int(time.time())}"
+if "previous_agent" not in st.session_state:
+    st.session_state.previous_agent = None
 
 # Sidebar - Agent Selection
 with st.sidebar:
@@ -75,6 +77,15 @@ with st.sidebar:
                 st.markdown("**Capabilities**:")
                 for cap in selected_agent["capabilities"]:
                     st.markdown(f"- {cap}")
+
+            # Clear chat when agent changes
+            if st.session_state.previous_agent != selected_agent_name:
+                if st.session_state.previous_agent is not None:  # Don't clear on first load
+                    st.session_state.messages = []
+                    import time
+                    st.session_state.session_id = f"streamlit_{int(time.time())}"
+                    st.info(f"Switched to {selected_agent_name}. Chat history cleared.")
+                st.session_state.previous_agent = selected_agent_name
 
         else:
             st.warning("No agents available")
