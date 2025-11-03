@@ -37,51 +37,27 @@ class AgentManager:
             raise
 
     async def _load_adk_agent(self, agent_name: str):
-        """Load an ADK agent configuration from adk_agents/ directory"""
+        """Load an ADK agent from adk_agents/ directory"""
         try:
-            # Read agent configuration directly from adk_agents/
-            agent_dir = Path(__file__).parent.parent / "adk_agents" / agent_name
-            agent_file = agent_dir / "agent.py"
+            # Import the actual ADK agent module
+            # Now that Starlette conflict is fixed, we can import ADK directly
+            module_path = f"{agent_name}.agent"
+            agent_module = importlib.import_module(module_path)
 
-            if not agent_file.exists():
-                raise FileNotFoundError(f"Agent file not found: {agent_file}")
+            # Get the root_agent object
+            if not hasattr(agent_module, 'root_agent'):
+                raise AttributeError(f"Agent module {agent_name} missing 'root_agent'")
 
-            # Extract agent configuration by reading the file
-            # We'll parse the Agent definition to get model and instruction
-            agent_config = self._parse_agent_config(agent_file)
+            root_agent = agent_module.root_agent
 
-            # Store simplified agent config (not the full ADK agent object)
-            self.agents[agent_name] = agent_config
-            logger.info(f"Loaded ADK agent config: {agent_name}")
+            # Store the actual ADK agent object
+            self.agents[agent_name] = root_agent
+            logger.info(f"Loaded ADK agent: {agent_name}")
 
         except Exception as e:
             logger.error(f"Failed to load agent {agent_name}: {str(e)}")
             raise
 
-    def _parse_agent_config(self, agent_file: Path) -> Dict:
-        """Parse ADK agent.py file to extract configuration"""
-        # Read the agent file content
-        content = agent_file.read_text()
-
-        # Simple extraction (production would use AST parsing)
-        config = {
-            "model": "gemini-2.0-flash-exp",  # default
-            "instruction": None
-        }
-
-        # Extract model
-        if 'model="' in content:
-            start = content.find('model="') + 7
-            end = content.find('"', start)
-            config["model"] = content[start:end]
-
-        # Extract instruction
-        if 'instruction="""' in content:
-            start = content.find('instruction="""') + 15
-            end = content.find('"""', start)
-            config["instruction"] = content[start:end].strip()
-
-        return config
     
     async def stream_chat(
         self,
@@ -89,68 +65,78 @@ class AgentManager:
         message: str,
         agent_name: str = "greeting_agent"
     ) -> AsyncGenerator[Dict, None]:
-        """Stream chat responses from an ADK agent"""
+        """Stream chat responses from an ADK agent with tool support"""
         try:
-            # Get the ADK agent configuration
+            # Get the actual ADK agent object
             if agent_name not in self.agents:
                 yield {"error": f"Agent '{agent_name}' not found. Available: {list(self.agents.keys())}"}
                 return
 
-            agent_config = self.agents[agent_name]
+            adk_agent = self.agents[agent_name]
 
             # Get or create session history
             if session_id not in self.sessions:
                 self.sessions[session_id] = []
 
-            # Build the contents with system instruction from ADK agent
-            contents = []
-
-            # Add system instruction if available
-            if agent_config.get("instruction"):
-                # First message includes system instruction
-                if len(self.sessions[session_id]) == 0:
-                    contents.append({
-                        "role": "user",
-                        "parts": [{"text": f"{agent_config['instruction']}\n\nUser: {message}"}]
-                    })
-                else:
-                    # For subsequent messages, use history + new message
-                    contents = self.sessions[session_id].copy()
-                    contents.append({
-                        "role": "user",
-                        "parts": [{"text": message}]
-                    })
-            else:
-                # No instruction, just use message
-                contents.append({
-                    "role": "user",
-                    "parts": [{"text": message}]
-                })
-
-            # Stream response using ADK agent's model configuration
-            from google import genai
-            client = genai.Client(api_key=settings.google_api_key)
-
-            response = await client.aio.models.generate_content_stream(
-                model=agent_config["model"],
-                contents=contents
-            )
-
+            # ADK agents handle their own system instructions and tools
+            # Just pass the user message
             full_response = ""
 
-            async for chunk in response:
-                if chunk.text:
-                    full_response += chunk.text
-                    yield {
-                        "type": "chunk",
-                        "content": chunk.text,
-                        "agent": agent_name
-                    }
+            try:
+                # Use ADK agent's built-in streaming (handles tools automatically)
+                # ADK agents use their instruction and tools internally
+                from google.adk.runners import run_agent
 
-            # Add assistant response to history
+                # Create context with message
+                context = {"user_message": message}
+
+                # Run agent asynchronously with streaming
+                async for event in run_agent(adk_agent, context=context, stream=True):
+                    # Handle different event types from ADK
+                    if hasattr(event, 'text') and event.text:
+                        full_response += event.text
+                        yield {
+                            "type": "chunk",
+                            "content": event.text,
+                            "agent": agent_name
+                        }
+                    elif hasattr(event, 'tool_call'):
+                        # Show tool execution to user
+                        yield {
+                            "type": "chunk",
+                            "content": f"\n[Calling tool: {event.tool_call.name}]\n",
+                            "agent": agent_name
+                        }
+
+            except Exception as e:
+                logger.error(f"ADK agent execution error: {str(e)}")
+                # Fallback to direct genai call if ADK streaming fails
+                from google import genai
+                client = genai.Client(api_key=settings.google_api_key)
+
+                response = await client.aio.models.generate_content_stream(
+                    model=adk_agent.model,
+                    contents=[{"role": "user", "parts": [{"text": message}]}],
+                    config={"tools": adk_agent.tools} if hasattr(adk_agent, 'tools') and adk_agent.tools else None
+                )
+
+                async for chunk in response:
+                    if chunk.text:
+                        full_response += chunk.text
+                        yield {
+                            "type": "chunk",
+                            "content": chunk.text,
+                            "agent": agent_name
+                        }
+
+            # Store in session history
             self.sessions[session_id].append({
-                "role": "model",
-                "parts": [{"text": full_response}]
+                "role": "user",
+                "content": message
+            })
+            self.sessions[session_id].append({
+                "role": "assistant",
+                "content": full_response
             })
 
             yield {

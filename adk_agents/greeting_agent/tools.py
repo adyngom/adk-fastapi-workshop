@@ -36,7 +36,13 @@ def get_current_time() -> dict:
     Returns:
         dict: Current time information including time, timezone, and formatted string
     """
-    now = datetime.now()
+    from datetime import timezone, timedelta
+
+    # Eastern Time is UTC-5 (EST) or UTC-4 (EDT)
+    # Using EST for consistency with workshop location
+    eastern = timezone(timedelta(hours=-5))
+    now = datetime.now(eastern)
+
     return {
         "current_time": now.strftime("%I:%M %p"),
         "date": now.strftime("%B %d, %Y"),
