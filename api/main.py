@@ -34,6 +34,10 @@ async def lifespan(app: FastAPI):
     agent_manager = AgentManager()
     await agent_manager.initialize()
     logger.info("Agent manager initialized")
+
+    # Inject agent_manager into routes
+    from api.routes import agents as agents_routes
+    agents_routes.set_agent_manager(agent_manager)
     
     yield
     

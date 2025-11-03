@@ -1,0 +1,25 @@
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Streamlit and dependencies
+COPY streamlit_apps/generic_chat/requirements.txt /app/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy Streamlit applications
+COPY streamlit_apps /app/streamlit_apps
+
+# Expose Streamlit default port
+EXPOSE 8501
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD curl -f http://localhost:8501/_stcore/health || exit 1
+
+# Default command (can be overridden in docker-compose.yml)
+CMD ["streamlit", "run", "streamlit_apps/generic_chat/app.py", "--server.port", "8501", "--server.address", "0.0.0.0"]

@@ -25,16 +25,63 @@ class AgentManager:
             adk_agents_path = Path(__file__).parent.parent / "adk_agents"
             sys.path.insert(0, str(adk_agents_path))
 
-            # Load ADK agents from adk_agents/
-            await self._load_adk_agent("greeting_agent")
-            await self._load_adk_agent("news_pipeline")
-            await self._load_adk_agent("competitive_analysis")
+            # Auto-discover agents from adk_agents/ directory
+            discovered_agents = self._discover_agents(adk_agents_path)
+            logger.info(f"Discovered {len(discovered_agents)} agents: {discovered_agents}")
+
+            # Load each discovered agent
+            for agent_name in discovered_agents:
+                await self._load_adk_agent(agent_name)
 
             logger.info("Agent manager initialized successfully")
             logger.info(f"Loaded {len(self.agents)} ADK agents: {list(self.agents.keys())}")
         except Exception as e:
             logger.error(f"Failed to initialize agent manager: {str(e)}")
             raise
+
+    def _discover_agents(self, adk_agents_path: Path) -> List[str]:
+        """Discover all valid ADK agents in adk_agents/ directory
+
+        An agent is valid if:
+        1. It's a directory in adk_agents/
+        2. It contains agent.py file
+        3. The agent.py file exports a 'root_agent' variable
+
+        Args:
+            adk_agents_path: Path to adk_agents directory
+
+        Returns:
+            List of agent names (directory names)
+        """
+        agents = []
+
+        if not adk_agents_path.exists():
+            logger.warning(f"ADK agents path not found: {adk_agents_path}")
+            return agents
+
+        for item in adk_agents_path.iterdir():
+            # Skip hidden directories and __pycache__
+            if not item.is_dir() or item.name.startswith('_') or item.name.startswith('.'):
+                continue
+
+            # Check for agent.py file
+            agent_file = item / "agent.py"
+            if not agent_file.exists():
+                logger.debug(f"Skipping {item.name}: no agent.py found")
+                continue
+
+            # Verify it exports root_agent (simple text search)
+            try:
+                content = agent_file.read_text()
+                if 'root_agent' in content:
+                    agents.append(item.name)
+                    logger.debug(f"Discovered agent: {item.name}")
+                else:
+                    logger.debug(f"Skipping {item.name}: no root_agent variable")
+            except Exception as e:
+                logger.warning(f"Error checking {item.name}: {e}")
+
+        return sorted(agents)  # Alphabetical order
 
     async def _load_adk_agent(self, agent_name: str):
         """Load an ADK agent from adk_agents/ directory"""
