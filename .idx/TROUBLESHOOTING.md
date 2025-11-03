@@ -23,10 +23,37 @@ This script:
 - ✅ Starts Redis
 - ✅ Verifies everything is ready
 
+**Then add your API key**:
+```bash
+# Edit .env and add: GOOGLE_API_KEY=your_key_here
+# Get key from: https://aistudio.google.com/apikey
+```
+
 **Then start services**:
 ```bash
 ./.idx/start-services.sh
 ```
+
+---
+
+## 🚫 When onStart Fails
+
+### Symptom: Preview shows "Error starting preview" or services not running
+
+**Cause**: onStart hooks failed (missing venv, no API key, or command not found)
+
+**Quick Fix** (30 seconds):
+```bash
+# If onCreate worked but services didn't start, just run:
+./.idx/start-services.sh
+```
+
+**Common reasons onStart fails**:
+- ❌ No .venv folder → Run `./.idx/manual-setup.sh` first
+- ❌ No API key in .env → Add your key to `.env`
+- ❌ Commands not found → Virtual environment not activated
+
+**The onStart hooks will now tell you exactly what to do** if they fail.
 
 ---
 
@@ -62,8 +89,12 @@ source .venv/bin/activate
 ### Step 2: Install Dependencies
 ```bash
 pip install --upgrade pip
-pip install -r requirements.txt
+
+# Install ADK first (avoids conflicts)
 pip install -r requirements-adk.txt
+
+# Then add FastAPI (without version pinning)
+pip install fastapi uvicorn python-multipart websockets redis pydantic-settings
 ```
 
 **Verify**: `adk --version` should show version number

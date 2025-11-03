@@ -102,29 +102,29 @@
 
       # Commands to run when workspace starts
       onStart = {
-        # Start Redis in background
-        start-redis = ''
-          redis-server --daemonize yes --port 6379
-        '';
+        # Start all services using the startup script
+        # This ensures proper venv activation and PYTHONPATH setup
+        start-services = ''
+          # Check if manual setup was needed
+          if [ ! -d ".venv" ]; then
+            echo "⚠️  Virtual environment not found"
+            echo "💡 Run: ./.idx/manual-setup.sh"
+            echo "💡 Then: ./.idx/start-services.sh"
+            exit 0
+          fi
 
-        # Start FastAPI backend
-        start-api = ''
-          source .venv/bin/activate
-          cd api
-          uvicorn main:app --host 0.0.0.0 --port 8000 --reload &
-        '';
+          # Check if API key configured
+          if [ ! -f ".env" ] || ! grep -q "GOOGLE_API_KEY=AIza" .env 2>/dev/null; then
+            echo "⚠️  API key not configured"
+            echo "💡 Add your GOOGLE_API_KEY to .env"
+            echo "💡 Get key: https://aistudio.google.com/apikey"
+            echo "💡 Then run: ./.idx/start-services.sh"
+            exit 0
+          fi
 
-        # Start ADK Web interface (in adk_agents directory)
-        start-adk-web = ''
-          source .venv/bin/activate
-          cd adk_agents
-          adk web --host 0.0.0.0 --port 3002 &
-        '';
-
-        # Serve frontend with Python's simple HTTP server
-        start-frontend = ''
-          cd frontend
-          python -m http.server 8080 &
+          # All good, start services
+          echo "🚀 Starting workshop services..."
+          ./.idx/start-services.sh
         '';
       };
     };
