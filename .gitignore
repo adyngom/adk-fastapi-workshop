@@ -326,7 +326,8 @@ mcp/cache/
 docs/
 
 # AI/ML models (if you download any)
-models/
+# Don't ignore api/models/ - that's our FastAPI code!
+/models/
 *.h5
 *.pkl
 *.joblib
