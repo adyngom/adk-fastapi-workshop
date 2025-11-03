@@ -120,9 +120,7 @@
             <h1>🤖 ADK Workshop Chat</h1>
             <div style="display: flex; align-items: center; gap: 10px;">
                 <select id="agentSelect" style="padding: 8px; border-radius: 4px; border: 1px solid #d1d5db; background: white;">
-                    <option value="greeting_agent">Greeting Agent</option>
-                    <option value="news_pipeline">News Pipeline (Sequential)</option>
-                    <option value="competitive_analysis">Competitive Analysis (Parallel)</option>
+                    <option value="">Loading agents...</option>
                 </select>
                 <div class="status" id="status">Connecting...</div>
             </div>
@@ -233,7 +231,46 @@
             if (e.key === 'Enter') sendMessage();
         };
 
-        connect();
+        // Fetch available agents from API and populate dropdown
+        async function loadAgents() {
+            try {
+                // Get API host (same logic as WebSocket)
+                let host = window.location.host;
+                if (host.includes(':8080')) {
+                    host = host.replace(':8080', ':8000');
+                } else if (host.match(/^\d+\-/)) {
+                    host = host.replace(/^\d+\-/, '8000-');
+                } else {
+                    host = window.location.hostname + ':8000';
+                }
+
+                const proto = window.location.protocol;
+                const apiUrl = `${proto}//${host}/api/agents/list`;
+
+                console.log('Fetching agents from:', apiUrl);
+                const response = await fetch(apiUrl);
+                const agents = await response.json();
+
+                // Clear dropdown
+                agentSelect.innerHTML = '';
+
+                // Add agent options
+                agents.forEach(agent => {
+                    const option = document.createElement('option');
+                    option.value = agent.name;
+                    option.textContent = agent.description;
+                    agentSelect.appendChild(option);
+                });
+
+                console.log(`Loaded ${agents.length} agents`);
+            } catch (error) {
+                console.error('Failed to load agents:', error);
+                agentSelect.innerHTML = '<option value="greeting_agent">Greeting Agent (fallback)</option>';
+            }
+        }
+
+        // Load agents first, then connect WebSocket
+        loadAgents().then(() => connect());
     </script>
 </body>
 </html>
