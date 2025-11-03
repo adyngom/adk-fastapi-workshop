@@ -145,10 +145,24 @@
         const sessionId = 'session_' + Date.now();
 
         function connect() {
-            // Build WebSocket URL relative to the host
+            // Build WebSocket URL
             const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsUrl = `${proto}//${window.location.host}/ws/chat/${sessionId}`;
-            
+
+            // In IDX, we need to connect to port 8000 (FastAPI) not 8080 (frontend)
+            // Replace port in hostname if present, otherwise add :8000
+            let host = window.location.host;
+            if (host.includes(':8080')) {
+                host = host.replace(':8080', ':8000');
+            } else if (host.match(/^\d+\-/)) {
+                // IDX format: 8080-firebase-adk-...
+                host = host.replace(/^\d+\-/, '8000-');
+            } else {
+                host = window.location.hostname + ':8000';
+            }
+
+            const wsUrl = `${proto}//${host}/ws/chat/${sessionId}`;
+            console.log('Connecting to:', wsUrl);
+
             ws = new WebSocket(wsUrl);
             
             ws.onopen = () => {
