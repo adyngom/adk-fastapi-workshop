@@ -37,10 +37,13 @@ sleep 1
 
 # Start FastAPI Backend
 echo "🐍 Starting FastAPI backend on port 8000..."
-cd "$OLDPWD"
+# Set PYTHONPATH to include project root (get absolute path)
+PROJECT_ROOT=$(pwd)
+export PYTHONPATH=$PROJECT_ROOT:$PYTHONPATH
 uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload > /tmp/api.log 2>&1 &
 API_PID=$!
 echo "   FastAPI PID: $API_PID"
+echo "   PYTHONPATH: $PYTHONPATH"
 sleep 2
 
 # Start ADK Web Interface
