@@ -40,7 +40,15 @@ echo "🐍 Starting FastAPI backend on port 8000..."
 # Set PYTHONPATH to include project root (get absolute path)
 PROJECT_ROOT=$(pwd)
 export PYTHONPATH=$PROJECT_ROOT:$PYTHONPATH
-uvicorn api.main:app --host 0.0.0.0 --port 8000 --reload > /tmp/api.log 2>&1 &
+
+# Use absolute path to uvicorn from venv
+UVICORN_PATH=.venv/bin/uvicorn
+if [ ! -f "$UVICORN_PATH" ]; then
+    echo "❌ ERROR: uvicorn not found in .venv"
+    exit 1
+fi
+
+$UVICORN_PATH api.main:app --host 0.0.0.0 --port 8000 --reload > /tmp/api.log 2>&1 &
 API_PID=$!
 echo "   FastAPI PID: $API_PID"
 echo "   PYTHONPATH: $PYTHONPATH"
@@ -48,8 +56,16 @@ sleep 2
 
 # Start ADK Web Interface
 echo "🔍 Starting ADK Web on port 3002..."
+
+# Use absolute path to adk from venv
+ADK_PATH=.venv/bin/adk
+if [ ! -f "$ADK_PATH" ]; then
+    echo "❌ ERROR: adk not found in .venv"
+    exit 1
+fi
+
 cd adk_agents
-adk web --host 0.0.0.0 --port 3002 > /tmp/adk-web.log 2>&1 &
+../$ADK_PATH web --host 0.0.0.0 --port 3002 > /tmp/adk-web.log 2>&1 &
 ADK_PID=$!
 echo "   ADK Web PID: $ADK_PID"
 cd ..
