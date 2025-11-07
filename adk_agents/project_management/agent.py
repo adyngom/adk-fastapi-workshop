@@ -1,9 +1,10 @@
 """Project Manager Root Agent"""
 from google.adk.agents import Agent, ParallelAgent, SequentialAgent
-from adk_agents.project_management.sub_agents.task_breakdown.agent import root_agent as task_breakdown
-from adk_agents.project_management.sub_agents.resource_allocator.agent import root_agent as resource_allocator
-from adk_agents.project_management.sub_agents.risk_assessor.agent import root_agent as risk_assessor
-from adk_agents.project_management.sub_agents.timeline_estimator.agent import root_agent as timeline_estimator
+from google.adk.tools.agent_tool import AgentTool
+from project_management.sub_agents.task_breakdown.agent import root_agent as task_breakdown
+from project_management.sub_agents.resource_allocator.agent import root_agent as resource_allocator
+from project_management.sub_agents.risk_assessor.agent import root_agent as risk_assessor
+from project_management.sub_agents.timeline_estimator.agent import root_agent as timeline_estimator
 
 # Parallel analysis of the tasks
 parallel_analysis = ParallelAgent(
@@ -24,5 +25,10 @@ synthesizer = Agent(
 root_agent = SequentialAgent(
     name="project_management_team",
     description="A team of AI agents that creates comprehensive project plans.",
-    sub_agents=[task_breakdown, parallel_analysis, synthesizer]
+    #sub_agents=[task_breakdown, parallel_analysis, synthesizer],
+    tools=[
+        AgentTool(agent=task_breakdown),
+        AgentTool(agent=parallel_analysis),
+        AgentTool(agent=synthesizer) 
+    ]
 )
