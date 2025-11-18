@@ -83,24 +83,47 @@ if [ ! -f ".env" ]; then
     echo "   Creating .env from template..."
     cp .env.template .env
     echo "✅ Created .env file"
-    echo ""
-    echo "⚠️  IMPORTANT: You need to add your API key!"
-    echo "   1. Get key from: https://aistudio.google.com/apikey"
-    echo "   2. Open .env file"
-    echo "   3. Replace 'your_key_here' with actual key"
-    echo ""
-else
-    echo "✅ .env file already exists"
 fi
 
-# Check if API key is set
-if grep -q "your_key_here" .env 2>/dev/null; then
-    echo "⚠️  WARNING: API key not yet configured"
-    echo "   Edit .env and add your GOOGLE_API_KEY"
-elif grep -q "GOOGLE_API_KEY=" .env 2>/dev/null; then
-    echo "✅ API key appears to be configured"
+# Check if API key is already configured
+if grep -q "GOOGLE_API_KEY=AIza" .env 2>/dev/null; then
+    echo "✅ API key already configured"
 else
-    echo "⚠️  WARNING: Can't find GOOGLE_API_KEY in .env"
+    echo ""
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo "🔑 Google API Key Required"
+    echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+    echo ""
+    echo "Get your free API key from:"
+    echo "  https://aistudio.google.com/apikey"
+    echo ""
+    echo "Paste your API key (starts with AIza):"
+    echo -n "> "
+    read -r api_key
+    echo ""
+
+    # Validate and save key
+    if [[ $api_key == AIza* ]]; then
+        # Update .env file
+        if grep -q "GOOGLE_API_KEY=" .env 2>/dev/null; then
+            sed -i.bak "s|GOOGLE_API_KEY=.*|GOOGLE_API_KEY=$api_key|" .env && rm -f .env.bak
+        else
+            echo "GOOGLE_API_KEY=$api_key" >> .env
+        fi
+        echo "✅ API key configured successfully"
+    elif [ -n "$api_key" ]; then
+        echo "⚠️  Warning: Key doesn't start with 'AIza' (may be incorrect)"
+        echo "   Saving anyway..."
+        if grep -q "GOOGLE_API_KEY=" .env; then
+            sed -i.bak "s|GOOGLE_API_KEY=.*|GOOGLE_API_KEY=$api_key|" .env && rm -f .env.bak
+        else
+            echo "GOOGLE_API_KEY=$api_key" >> .env
+        fi
+        echo "✅ API key saved (verify if services don't work)"
+    else
+        echo "❌ No API key entered"
+        echo "   You'll need to add it manually to .env before starting services"
+    fi
 fi
 
 # =============================================================================
@@ -169,17 +192,16 @@ echo "════════════════════════�
 echo ""
 echo "📝 Next Steps:"
 echo ""
-echo "1. Make sure your API key is in .env:"
-echo "   - Edit: .env"
-echo "   - Add: GOOGLE_API_KEY=your_actual_key"
-echo ""
-echo "2. Start all services:"
+echo "1. Start all services:"
 echo "   ./.idx/start-services.sh"
 echo ""
-echo "3. Access the interfaces:"
+echo "2. Access the interfaces (check Ports panel for URLs):"
 echo "   - Custom UI: Port 8080 (frontend)"
 echo "   - ADK Web: Port 3002 (debugging)"
 echo "   - API Docs: Port 8000/docs (backend)"
+echo ""
+echo "3. Test with an agent:"
+echo "   Select 'Greeting Agent' and ask: 'What time is it?'"
 echo ""
 echo "═══════════════════════════════════════════════════════════"
 echo ""
