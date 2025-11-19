@@ -9,6 +9,11 @@ import asyncio
 from pathlib import Path
 from datetime import datetime
 import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env
+project_root = Path(__file__).parent.parent.parent
+load_dotenv(project_root / ".env")
 
 # Page configuration
 st.set_page_config(
@@ -41,7 +46,6 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Add adk_agents to Python path
-project_root = Path(__file__).parent.parent.parent
 adk_agents_path = project_root / "adk_agents"
 sys.path.insert(0, str(adk_agents_path))
 
