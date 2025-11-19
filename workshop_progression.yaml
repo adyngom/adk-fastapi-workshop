@@ -806,6 +806,77 @@ progression:
       You're now ready to build enterprise AI agent systems!
 
 # ============================================================================
+# BONUS CONTENT (Optional 15-20 minutes)
+# ============================================================================
+
+bonus_content:
+  file: "BONUS_CONTENT.md"
+  duration_minutes: 15-20
+  timing: "End of workshop or pre-masterclass teaser"
+
+  topics:
+    - title: "Gemini Built-In Tools"
+      duration: 5
+      features:
+        - "Google Search tool (real-time web search)"
+        - "Code Execution tool (write and run Python)"
+        - "BigQuery tools (natural language to SQL)"
+        - "Vertex AI RAG Engine (private documents)"
+      demo: "Add google_search to content_pipeline research_agent"
+
+    - title: "Multi-Model Strategies"
+      duration: 5
+      features:
+        - "OpenAI GPT-4o via LiteLLM"
+        - "Anthropic Claude via LiteLLM"
+        - "Ollama for local/private models"
+        - "Model fallback chains"
+      demo: "Switch greeting_agent to GPT-4o or Claude"
+
+    - title: "Production Deployment Preview"
+      duration: 5
+      features:
+        - "Cloud Run deployment (5 min setup)"
+        - "GKE for enterprise (secure sandboxing)"
+        - "Agent Engine (fully managed)"
+        - "Apigee AI Gateway (governance)"
+      demo: "Show Cloud Run deployment command"
+
+    - title: "Enterprise Features Teaser"
+      duration: 5
+      features:
+        - "BigQuery audit logging (ADK 1.18)"
+        - "Cost optimization strategies"
+        - "Semantic caching (80% faster)"
+        - "Model Armor (security)"
+      demo: "Show Apigee policy configuration"
+
+  masterclass_preview:
+    title: "Paid Masterclass: Production ADK Mastery"
+    duration: "Full day (6-8 hours)"
+    modules:
+      - "Module 1: Advanced Built-In Tools (hands-on BigQuery agent)"
+      - "Module 2: Multi-Model Orchestration (intelligent routing)"
+      - "Module 3: Production Deployment (Cloud Run + GKE + observability)"
+      - "Module 4: Enterprise Patterns (audit, compliance, HA)"
+    outcomes:
+      - "Deploy agents to Cloud Run with full observability"
+      - "Build multi-model orchestrator with cost optimization"
+      - "Implement enterprise audit and compliance patterns"
+      - "Production-ready systems in your organization"
+
+  quick_wins:
+    - action: "Add google_search to research agents"
+      impact: "Real-time data in content creation"
+      effort: "2 minutes"
+    - action: "Enable code_executor for calculations"
+      impact: "Agents can do math and analysis"
+      effort: "2 minutes"
+    - action: "Try OpenAI or Claude via LiteLLM"
+      impact: "See different model capabilities"
+      effort: "5 minutes"
+
+# ============================================================================
 # INSTRUCTOR GUIDE
 # ============================================================================
 
