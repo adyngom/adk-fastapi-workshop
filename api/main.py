@@ -55,10 +55,11 @@ app = FastAPI(
 )
 
 # CORS middleware
+# Allow all origins for workshop (works in both Docker and IDX)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_credentials=False,  # Can't use credentials with wildcard origins
     allow_methods=["*"],
     allow_headers=["*"],
 )

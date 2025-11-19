@@ -21,8 +21,9 @@ class Settings(BaseSettings):
     # Agent
     default_model: str = "gemini-2.0-flash-exp"
 
-    # CORS
-    cors_origins: List[str] = ["http://localhost", "http://127.0.0.1"]
+    # CORS - Allow localhost (Docker) and IDX domains
+    # In production, restrict this to specific domains
+    cors_origins: List[str] = ["*"]  # Allow all for workshop (IDX + Docker)
 
     # MCP
     mcp_enabled: bool = False
