@@ -55,14 +55,14 @@ pip install --upgrade pip --quiet
 # Install dependencies
 # Note: requirements.txt has conflicts (ADK vs FastAPI Starlette versions)
 # In IDX single environment, install requirements-adk.txt first, then add FastAPI deps
-echo "   Installing ADK dependencies (~30 seconds)..."
+echo "   Installing ADK and Streamlit dependencies (~30 seconds)..."
 pip install -r requirements-adk.txt --quiet
 
 echo "   Installing FastAPI and supporting libraries (~30 seconds)..."
 # Install FastAPI deps without version pinning to avoid conflicts with ADK
 pip install fastapi uvicorn python-multipart websockets redis pydantic-settings --quiet
 
-echo "✅ Python dependencies installed"
+echo "✅ Python dependencies installed (ADK 1.18, Streamlit, FastAPI)"
 
 # Verify ADK installed
 if command -v adk &> /dev/null; then
@@ -70,6 +70,15 @@ if command -v adk &> /dev/null; then
     echo "   ADK version: $ADK_VERSION"
 else
     echo "❌ ERROR: ADK not found after installation"
+    exit 1
+fi
+
+# Verify Streamlit installed
+if command -v streamlit &> /dev/null; then
+    STREAMLIT_VERSION=$(streamlit --version 2>&1 | grep "Streamlit" | awk '{print $2}' || echo "unknown")
+    echo "   Streamlit version: $STREAMLIT_VERSION"
+else
+    echo "❌ ERROR: Streamlit not found after installation"
     exit 1
 fi
 
@@ -196,12 +205,12 @@ echo "1. Start all services:"
 echo "   ./.idx/start-services.sh"
 echo ""
 echo "2. Access the interfaces (check Ports panel for URLs):"
-echo "   - Custom UI: Port 8080 (frontend)"
-echo "   - ADK Web: Port 3002 (debugging)"
-echo "   - API Docs: Port 8000/docs (backend)"
+echo "   - Streamlit UI: Port 8501 (Primary - Start here!)"
+echo "   - ADK Web: Port 3002 (Debugging)"
+echo "   - API Docs: Port 8000/docs (FastAPI - Optional)"
 echo ""
 echo "3. Test with an agent:"
-echo "   Select 'Greeting Agent' and ask: 'What time is it?'"
+echo "   Select 'greeting_agent' and ask: 'What time is it?'"
 echo ""
 echo "═══════════════════════════════════════════════════════════"
 echo ""

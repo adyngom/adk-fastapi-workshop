@@ -1,6 +1,9 @@
 # Google ADK Core (for ADK Web Interface)
-google-adk>=1.17.0
-google-genai>=1.17.0
+google-adk>=1.18.0
+google-genai>=1.18.0
+
+# Streamlit Workshop UI
+streamlit>=1.28.0
 
 # Environment Management
 python-dotenv>=1.0.1
