@@ -71,32 +71,30 @@ echo "   ADK Web PID: $ADK_PID"
 cd ..
 sleep 2
 
-# Start Frontend Server
-echo "🎨 Starting Frontend on port 8080..."
-cd frontend
-python -m http.server 8080 > /tmp/frontend.log 2>&1 &
-FRONTEND_PID=$!
-echo "   Frontend PID: $FRONTEND_PID"
-cd ..
+# Start Streamlit Workshop UI
+echo "🎨 Starting Streamlit Workshop UI on port 8501..."
+streamlit run streamlit_apps/workshop_ui/app.py --server.port 8501 --server.address 0.0.0.0 > /tmp/streamlit.log 2>&1 &
+STREAMLIT_PID=$!
+echo "   Streamlit PID: $STREAMLIT_PID"
 
 echo ""
 echo "✅ All services started successfully!"
 echo ""
 echo "📍 Access your interfaces:"
-echo "   Custom UI:  https://\${YOUR_IDX_URL}:8080"
-echo "   ADK Web:    https://\${YOUR_IDX_URL}:3002"
-echo "   API Docs:   https://\${YOUR_IDX_URL}:8000/docs"
+echo "   🎯 Streamlit UI: Port 8501 (Primary - Start here!)"
+echo "   🔍 ADK Web:      Port 3002 (Debugging)"
+echo "   📚 API Docs:     Port 8000 (FastAPI - Optional)"
 echo ""
 echo "📝 Service PIDs:"
-echo "   FastAPI: $API_PID"
+echo "   Streamlit: $STREAMLIT_PID"
 echo "   ADK Web: $ADK_PID"
-echo "   Frontend: $FRONTEND_PID"
+echo "   FastAPI: $API_PID (Optional)"
 echo ""
 echo "📊 View logs:"
-echo "   tail -f /tmp/api.log"
+echo "   tail -f /tmp/streamlit.log"
 echo "   tail -f /tmp/adk-web.log"
-echo "   tail -f /tmp/frontend.log"
+echo "   tail -f /tmp/api.log"
 echo ""
 echo "🛑 Stop services:"
-echo "   kill $API_PID $ADK_PID $FRONTEND_PID"
+echo "   kill $STREAMLIT_PID $ADK_PID $API_PID"
 echo "   redis-cli shutdown"
