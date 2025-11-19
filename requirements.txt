@@ -1,6 +1,6 @@
 # Google ADK Core
-google-adk>=1.17.0
-google-genai>=1.17.0
+google-adk>=1.18.0
+google-genai>=1.18.0
 google-cloud-aiplatform>=1.70.0
 
 # FastAPI and Web Framework
