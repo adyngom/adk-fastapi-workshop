@@ -8,20 +8,26 @@
 
 ## ✅ Step 1: Open in Google IDX (1 minute)
 
+**Prerequisites:**
+- Google account (free) - IDX requires Google login
+- No GitHub account needed (repo is public)
+
 Click this button to open the workshop in your browser:
 
 [![Open in IDX](https://cdn.idx.dev/btn/open_dark_32@2x.png)](https://idx.google.com/import?url=https://github.com/adyngom/adk-fastapi-workshop)
 
 **What happens**:
+- Prompts you to sign in with Google (if not logged in)
 - Opens Google IDX (browser-based development environment)
 - Automatically clones the workshop repository
 - Starts installing dependencies (watch the progress bar)
 
 **If the button doesn't work**:
 1. Go to https://idx.google.com
-2. Click "New Workspace"
-3. Choose "Clone from Git"
-4. Paste: `https://github.com/adyngom/adk-fastapi-workshop`
+2. Sign in with your Google account
+3. Click "New Workspace"
+4. Choose "Clone from Git"
+5. Paste: `https://github.com/adyngom/adk-fastapi-workshop`
 
 ---
 
@@ -80,8 +86,17 @@ Frontend PID: XXXX
 
 **You should see**:
 - "ADK Workshop Chat" interface
-- Sidebar showing "Agents Loaded: 4"
-- List of available agents
+- Sidebar showing "Agents Loaded: 9"
+- List of available agents:
+  - greeting_agent (Step 1)
+  - customer_service (Step 2)
+  - content_pipeline (Step 3)
+  - medical_authorization (Step 4)
+  - financial_advisor (Step 5)
+  - brand_intelligence (Step 6)
+  - software_assistant (Step 7)
+  - project_management (Step 8)
+  - verified_recommendations (Step 9)
 
 ---
 
@@ -171,13 +186,14 @@ streamlit run streamlit_apps/workshop_ui/app.py --server.port 8501 --server.addr
 - Streamlit UI accessible (port 8501)
 
 **We'll cover**:
-- How ADK agents work
-- Building your own agent
-- Multi-agent workflows
-- Production deployment patterns
+- Foundation: Single agents with custom tools (Step 1)
+- Real Workflows: Sequential multi-agent patterns (Steps 2-4)
+- Intelligent Decision-Making: Parallel execution (Steps 5-6)
+- Production Systems: MCP, orchestration, verification (Steps 7-9)
+- BONUS: Built-in tools, multi-model strategies, deployment
 
 **Time**: [Insert time]
-**Duration**: 2 hours
+**Duration**: 4 hours (9 agents total)
 
 ---
 
