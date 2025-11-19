@@ -1,0 +1,726 @@
+# ADK + FastAPI Workshop Progression System
+# 9 Agents - 4 Hours - Production-Ready Patterns
+
+workshop:
+  title: "Building Production AI Agents with ADK + FastAPI"
+  subtitle: "From Greeting to Production: Real-World Agent Systems"
+  duration_hours: 4
+  total_agents: 9
+  target_audience: "Developers building enterprise AI systems"
+  prerequisites:
+    - "Python 3.11+"
+    - "Basic async/await understanding"
+    - "Google Cloud account (for deployment)"
+
+  philosophy: |
+    This workshop teaches production-ready AI agent patterns through real business use cases.
+    No calculators or weather agents - we build systems that transform workflows.
+    Each agent demonstrates a specific ADK pattern and builds on previous concepts.
+
+progression:
+  # ============================================================================
+  # PHASE 1: FOUNDATION (30 min)
+  # ============================================================================
+
+  - step: 1
+    agent: greeting_agent
+    tag: step-1-greeting-agent
+    phase: "Foundation"
+    title: "Single Agent with Custom Tools"
+    duration_minutes: 30
+    difficulty: beginner
+
+    pattern:
+      type: "Single Agent"
+      class: "Agent"
+      demonstrates:
+        - "Basic agent structure (name, model, description, instruction)"
+        - "Custom Python functions as tools"
+        - "Tool function signatures and docstrings"
+        - "Testing with ADK Web UI"
+        - "Voice input (1.18 feature)"
+
+    business_value: |
+      Foundation pattern for all agents. Learn core ADK concepts through a friendly
+      assistant that demonstrates tool calling, instruction prompts, and testing.
+
+    learning_objectives:
+      - "Understand ADK Agent class structure"
+      - "Create custom Python function tools"
+      - "Write effective agent instructions"
+      - "Test agents with ADK Web (port 3002)"
+      - "Use Streamlit UI (port 8501)"
+      - "Enable voice input for compatible models"
+
+    key_files:
+      - path: "adk_agents/greeting_agent/agent.py"
+        purpose: "Agent definition with model and tools"
+      - path: "adk_agents/greeting_agent/tools.py"
+        purpose: "Custom tool functions"
+      - path: "adk_agents/greeting_agent/.env"
+        purpose: "API key configuration"
+
+    exercises:
+      - id: "ex-1-1"
+        name: "Customize company info"
+        file: "adk_agents/greeting_agent/tools.py"
+        task: "Update get_company_info() with your organization's data"
+        hints:
+          - "Replace 'Acme Corporation' with your company name"
+          - "Update industry, location, and use cases"
+          - "Test by asking: 'Tell me about my company'"
+
+      - id: "ex-1-2"
+        name: "Add new tool: get_team_members()"
+        file: "adk_agents/greeting_agent/tools.py"
+        task: "Create a function that returns your team roster"
+        hints:
+          - "Follow same pattern as get_company_info()"
+          - "Return dict with team member names and roles"
+          - "Add docstring for ADK to understand the tool"
+          - "Restart ADK Web to see new tool"
+
+      - id: "ex-1-3"
+        name: "Modify agent instruction"
+        file: "adk_agents/greeting_agent/agent.py"
+        task: "Make the agent more enthusiastic and add emoji"
+        hints:
+          - "Update the instruction field"
+          - "Test tone changes in ADK Web"
+
+    success_criteria:
+      - "Agent responds with your custom company info"
+      - "New team_members tool is callable"
+      - "Agent personality reflects your instruction changes"
+      - "Tested in both ADK Web and Streamlit UI"
+
+    common_issues:
+      - issue: "Tool not showing up in ADK Web"
+        solution: "Restart ADK Web after adding new tools"
+      - issue: "Agent not using the tool"
+        solution: "Check docstring is clear about what the tool does"
+
+    next_step_preview: |
+      Next we'll build a customer service agent with a 3-agent sequential workflow
+      that triages → researches → responds. You'll learn how agents pass state.
+
+  # ============================================================================
+  # PHASE 2: REAL WORKFLOWS (90 min)
+  # ============================================================================
+
+  - step: 2
+    agent: customer_service
+    tag: step-2-customer-service
+    phase: "Real Workflows"
+    title: "Sequential Workflow: Support Automation"
+    duration_minutes: 30
+    difficulty: intermediate
+    prerequisites: ["step-1-greeting-agent"]
+
+    pattern:
+      type: "SequentialAgent"
+      class: "SequentialAgent"
+      demonstrates:
+        - "Multi-agent sequential workflows"
+        - "State passing between agents"
+        - "output_key for data flow"
+        - "Sub-agent composition"
+
+    business_value: |
+      Automate customer support tickets with a 3-step workflow: triage priority,
+      research context, generate response. Reduces support response time by 70%.
+
+    inspiration:
+      source: "adk-samples/python/agents/customer-service"
+      adapted_from: "Cymbal Home & Garden Customer Service"
+      key_patterns:
+        - "Triage → Research → Respond pipeline"
+        - "Session state management"
+        - "Tool-based interactions"
+
+    architecture:
+      workflow: "triage_agent → research_agent → response_agent"
+      agents:
+        - name: "triage_agent"
+          role: "Categorize issue and assign priority (P0-P3)"
+          outputs: "priority, category, urgency"
+        - name: "research_agent"
+          role: "Search knowledge base and past tickets"
+          outputs: "relevant_articles, similar_tickets"
+        - name: "response_agent"
+          role: "Generate customer response using research"
+          outputs: "response_text, next_actions"
+
+    learning_objectives:
+      - "Build SequentialAgent with sub_agents list"
+      - "Pass context between sequential steps"
+      - "Use output_key to expose intermediate results"
+      - "Handle multi-step business workflows"
+
+    exercises:
+      - id: "ex-2-1"
+        name: "Add escalation detection"
+        task: "Insert 4th agent that flags when to escalate to human"
+        hints:
+          - "Create escalation_agent between triage and research"
+          - "Check for keywords: 'angry', 'manager', 'cancel'"
+          - "Set escalate flag in state"
+
+      - id: "ex-2-2"
+        name: "Track customer_id through workflow"
+        task: "Pass customer_id from triage → research → response"
+        hints:
+          - "Use session state to store customer_id"
+          - "Each agent accesses via context"
+
+    success_criteria:
+      - "3-agent workflow executes sequentially"
+      - "State flows correctly between agents"
+      - "Response uses research from previous step"
+      - "Can handle sample support tickets"
+
+    next_step_preview: |
+      Next: Content creation pipeline that researches → drafts → optimizes content.
+      Same sequential pattern, different business domain.
+
+  - step: 3
+    agent: content_pipeline
+    tag: step-3-content-pipeline
+    phase: "Real Workflows"
+    title: "Content Creation Pipeline"
+    duration_minutes: 30
+    difficulty: intermediate
+    prerequisites: ["step-2-customer-service"]
+
+    pattern:
+      type: "SequentialAgent"
+      class: "SequentialAgent"
+      demonstrates:
+        - "Sequential pattern in content domain"
+        - "Google Search tool integration"
+        - "Multi-stage content refinement"
+
+    business_value: |
+      Automate blog/article creation with research → draft → optimize → publish workflow.
+      Content teams publish 3x faster with AI assistance.
+
+    inspiration:
+      source: "adk-samples/python/agents/blog-writer"
+      adapted_from: "Blog Writer Agent"
+
+    architecture:
+      workflow: "researcher → drafter → optimizer → publisher"
+      agents:
+        - name: "researcher"
+          role: "Google Search for recent articles on topic"
+          tools: ["GoogleSearchTool"]
+        - name: "drafter"
+          role: "Write initial article using research"
+        - name: "optimizer"
+          role: "Improve SEO, readability, structure"
+        - name: "publisher"
+          role: "Format for target platform (Medium, blog, etc)"
+
+    learning_objectives:
+      - "Reuse sequential pattern in new domain"
+      - "Integrate built-in ADK tools (Google Search)"
+      - "Handle content transformation workflows"
+
+    exercises:
+      - id: "ex-3-1"
+        name: "Add fact-checking agent"
+        task: "Insert agent that verifies claims before publishing"
+
+      - id: "ex-3-2"
+        name: "Add citation extraction"
+        task: "Extract and format sources from research step"
+
+    success_criteria:
+      - "Pipeline produces complete article from topic"
+      - "Google Search results inform content"
+      - "Citations properly extracted and formatted"
+
+    next_step_preview: |
+      Next: Medical authorization workflow with compliance and decision points.
+      More complex sequential logic with validation steps.
+
+  - step: 4
+    agent: medical_authorization
+    tag: step-4-medical-authorization
+    phase: "Real Workflows"
+    title: "Medical Authorization: Compliance Workflows"
+    duration_minutes: 30
+    difficulty: intermediate
+    prerequisites: ["step-3-content-pipeline"]
+
+    pattern:
+      type: "SequentialAgent with Validation"
+      class: "SequentialAgent"
+      demonstrates:
+        - "Compliance and regulation handling"
+        - "Structured data extraction"
+        - "Decision gates in workflows"
+        - "Audit trail creation"
+
+    business_value: |
+      Automate medical pre-authorization processing. Extract patient data → verify
+      insurance → check medical necessity → generate authorization decision.
+      Reduces admin time from hours to minutes.
+
+    inspiration:
+      source: "adk-samples/python/agents/medical-pre-authorization"
+      adapted_from: "Medical Pre-Authorization Agent"
+
+    architecture:
+      workflow: "intake → verification → medical_review → authorization"
+      agents:
+        - name: "intake_agent"
+          role: "Extract structured data from forms"
+          outputs: "patient_info, procedure_code, provider"
+        - name: "verification_agent"
+          role: "Verify insurance coverage and eligibility"
+        - name: "medical_review_agent"
+          role: "Check medical necessity criteria"
+        - name: "authorization_agent"
+          role: "Generate approval/denial decision with reasoning"
+
+    learning_objectives:
+      - "Handle structured data extraction"
+      - "Implement decision gates (approve/deny/manual review)"
+      - "Create audit trails for compliance"
+      - "Work with sensitive healthcare data patterns"
+
+    exercises:
+      - id: "ex-4-1"
+        name: "Add appeals workflow"
+        task: "Create alternate path for denied authorizations"
+
+      - id: "ex-4-2"
+        name: "Implement audit logging"
+        task: "Log each decision with reasoning and timestamp"
+
+    success_criteria:
+      - "Correctly extracts patient data from sample forms"
+      - "Decision logic works for approve/deny cases"
+      - "Audit trail captures all steps"
+
+    next_step_preview: |
+      Phase 2 complete! Now we move to parallel processing patterns. Next: Financial
+      advisor with multiple analysts working simultaneously.
+
+  # ============================================================================
+  # PHASE 3: INTELLIGENT DECISION-MAKING (60 min)
+  # ============================================================================
+
+  - step: 5
+    agent: financial_advisor
+    tag: step-5-financial-advisor
+    phase: "Intelligent Decision-Making"
+    title: "Parallel Analysis: Multi-Perspective Decisions"
+    duration_minutes: 30
+    difficulty: advanced
+    prerequisites: ["step-4-medical-authorization"]
+
+    pattern:
+      type: "ParallelAgent + Synthesis"
+      class: "ParallelAgent"
+      demonstrates:
+        - "Parallel agent execution"
+        - "Multiple perspectives on same data"
+        - "Synthesis agent to combine insights"
+        - "Performance optimization"
+
+    business_value: |
+      Financial analysis with 4 parallel analysts: data analyst, trading strategist,
+      execution planner, risk evaluator. Faster, more comprehensive investment decisions.
+
+    inspiration:
+      source: "adk-samples/python/agents/financial-advisor"
+      adapted_from: "Financial Advisor Multi-Agent Team"
+      key_patterns:
+        - "Parallel execution of specialized agents"
+        - "Synthesis of multiple viewpoints"
+        - "Risk assessment integration"
+
+    architecture:
+      workflow: "Parallel(data_analyst, trading_analyst, execution_analyst, risk_analyst) → synthesizer"
+      parallel_agents:
+        - name: "data_analyst"
+          role: "Market data and SEC filings analysis"
+          tools: ["GoogleSearchTool"]
+        - name: "trading_analyst"
+          role: "Develop trading strategies based on user risk profile"
+        - name: "execution_analyst"
+          role: "Create detailed execution plan"
+        - name: "risk_analyst"
+          role: "Comprehensive risk assessment"
+      synthesizer:
+        role: "Combine all analyses into unified recommendation"
+
+    learning_objectives:
+      - "Build ParallelAgent with concurrent execution"
+      - "Understand when to use parallel vs sequential"
+      - "Implement synthesis agent to combine results"
+      - "Handle multiple outputs in final response"
+
+    exercises:
+      - id: "ex-5-1"
+        name: "Add sentiment analyst"
+        task: "5th parallel agent analyzing market sentiment"
+
+      - id: "ex-5-2"
+        name: "Weighted synthesis"
+        task: "Give different weights to each analyst's input"
+
+    success_criteria:
+      - "All 4 analysts run in parallel (check execution time)"
+      - "Synthesizer combines insights coherently"
+      - "Final recommendation includes all perspectives"
+
+    next_step_preview: |
+      Next: Brand intelligence with parallel competitive research across multiple sources.
+
+  - step: 6
+    agent: brand_intelligence
+    tag: step-6-brand-intelligence
+    phase: "Intelligent Decision-Making"
+    title: "Multi-Source Intelligence Gathering"
+    duration_minutes: 30
+    difficulty: advanced
+    prerequisites: ["step-5-financial-advisor"]
+
+    pattern:
+      type: "ParallelAgent + Synthesis"
+      class: "ParallelAgent"
+      demonstrates:
+        - "Parallel data gathering from multiple sources"
+        - "Competitive intelligence patterns"
+        - "Data synthesis and deduplication"
+
+    business_value: |
+      Brand and competitive intelligence system. Parallel search across news, social,
+      search trends, competitor sites. Marketing teams make data-driven decisions faster.
+
+    inspiration:
+      source: "adk-samples/python/agents/brand-search-optimization"
+      adapted_from: "Brand Search Optimization Agent"
+
+    architecture:
+      workflow: "Parallel(news_researcher, social_analyzer, trend_tracker, competitor_monitor) → synthesizer"
+      parallel_agents:
+        - name: "news_researcher"
+          role: "Recent news mentions and sentiment"
+        - name: "social_analyzer"
+          role: "Social media trends and conversations"
+        - name: "trend_tracker"
+          role: "Search trends and SEO positioning"
+        - name: "competitor_monitor"
+          role: "Competitive positioning analysis"
+
+    learning_objectives:
+      - "Parallel data collection from diverse sources"
+      - "Handle different data formats in synthesis"
+      - "Deduplication and relevance ranking"
+
+    exercises:
+      - id: "ex-6-1"
+        name: "Add review aggregator"
+        task: "Parallel agent collecting product reviews"
+
+      - id: "ex-6-2"
+        name: "Implement sentiment scoring"
+        task: "Calculate overall brand sentiment from all sources"
+
+    success_criteria:
+      - "All sources searched in parallel"
+      - "Duplicate insights filtered out"
+      - "Sentiment properly aggregated"
+
+    next_step_preview: |
+      Phase 3 complete! Final phase: Production-grade systems. Next: Software development
+      assistant with complex multi-agent orchestration.
+
+  # ============================================================================
+  # PHASE 4: PRODUCTION-GRADE SYSTEMS (60 min)
+  # ============================================================================
+
+  - step: 7
+    agent: software_assistant
+    tag: step-7-software-assistant
+    phase: "Production-Grade Systems"
+    title: "Developer Workflow Automation"
+    duration_minutes: 20
+    difficulty: advanced
+    prerequisites: ["step-6-brand-intelligence"]
+
+    pattern:
+      type: "Multi-Agent Team with MCP"
+      class: "SequentialAgent"
+      demonstrates:
+        - "Model Context Protocol (MCP) integration"
+        - "Database tool integration"
+        - "RAG (Retrieval-Augmented Generation)"
+        - "GitHub integration"
+        - "Stack Overflow tool usage"
+
+    business_value: |
+      IT Support and developer assistance. Triage bugs → search knowledge base →
+      find similar issues → generate solution. Engineering teams ship faster.
+
+    inspiration:
+      source: "adk-samples/python/agents/software-bug-assistant"
+      adapted_from: "Software Bug Assistant"
+      key_patterns:
+        - "MCP Toolbox for database access"
+        - "GitHub MCP server for external tickets"
+        - "RAG with vector search"
+        - "Multi-source knowledge synthesis"
+
+    architecture:
+      workflow: "analyzer → searcher → solution_generator"
+      tools:
+        - "MCP Toolbox (PostgreSQL)"
+        - "GitHub MCP Server"
+        - "Google Search"
+        - "StackOverflow API (LangChain)"
+      agents:
+        - name: "analyzer"
+          role: "Parse bug report and extract key info"
+        - name: "searcher"
+          role: "Search internal DB + GitHub + Stack Overflow"
+        - name: "solution_generator"
+          role: "Generate fix based on similar issues"
+
+    learning_objectives:
+      - "Integrate Model Context Protocol tools"
+      - "Set up database tool access patterns"
+      - "Use RAG for similar issue retrieval"
+      - "Combine internal + external knowledge sources"
+
+    exercises:
+      - id: "ex-7-1"
+        name: "Add Jira integration"
+        task: "MCP tool to fetch Jira tickets"
+
+      - id: "ex-7-2"
+        name: "Implement solution ranking"
+        task: "Rank solutions by relevance score"
+
+    success_criteria:
+      - "Searches internal ticket database"
+      - "Fetches relevant GitHub issues"
+      - "Generates actionable solutions"
+      - "Cites sources properly"
+
+    next_step_preview: |
+      Next: Project management team - complex orchestration with role-based agents.
+
+  - step: 8
+    agent: project_management
+    tag: step-8-project-management
+    phase: "Production-Grade Systems"
+    title: "Complex Multi-Agent Orchestration"
+    duration_minutes: 20
+    difficulty: advanced
+    prerequisites: ["step-7-software-assistant"]
+
+    pattern:
+      type: "Multi-Agent Team with Roles"
+      class: "SequentialAgent"
+      demonstrates:
+        - "Role-based agent architecture"
+        - "Complex orchestration (Sequential + Parallel combined)"
+        - "Agent specialization patterns"
+        - "Comprehensive output synthesis"
+
+    business_value: |
+      Project planning automation. Break down project → parallel analysis (tech, resources,
+      risks) → synthesize comprehensive plan. PM teams create plans in minutes vs days.
+
+    architecture:
+      workflow: "task_breakdown → Parallel(tech_analyzer, resource_planner, risk_assessor) → synthesizer"
+      agents:
+        - name: "task_breakdown_agent"
+          role: "Decompose project into tasks and milestones"
+        - name: "technical_analyzer"
+          role: "Assess technical feasibility and approach"
+        - name: "resource_planner"
+          role: "Estimate team size, budget, timeline"
+        - name: "risk_assessor"
+          role: "Identify risks and mitigation strategies"
+        - name: "synthesis_agent"
+          role: "Create comprehensive project plan"
+
+    learning_objectives:
+      - "Combine Sequential + Parallel patterns"
+      - "Implement role-based agent teams"
+      - "Handle complex multi-output synthesis"
+      - "Structure large agent systems"
+
+    exercises:
+      - id: "ex-8-1"
+        name: "Add stakeholder analyst"
+        task: "Agent to identify stakeholders and communication plan"
+
+      - id: "ex-8-2"
+        name: "Export to project management format"
+        task: "Generate Gantt chart or Jira epic output"
+
+    success_criteria:
+      - "Sequential + Parallel workflow executes correctly"
+      - "All specialized agents contribute insights"
+      - "Final plan is comprehensive and actionable"
+
+    next_step_preview: |
+      Final agent: Verified recommendation system with accountability and audit trails.
+      The most production-ready pattern - inspired by the charity advisor example.
+
+  - step: 9
+    agent: verified_recommendations
+    tag: step-9-verified-recommendations
+    phase: "Production-Grade Systems"
+    title: "Verified Recommendations with Accountability"
+    duration_minutes: 20
+    difficulty: expert
+    prerequisites: ["step-8-project-management"]
+
+    pattern:
+      type: "Multi-Agent with Verification & Audit"
+      class: "SequentialAgent"
+      demonstrates:
+        - "Verification and validation agents"
+        - "Audit trail creation"
+        - "Transaction logging for accountability"
+        - "Security patterns for high-stakes decisions"
+        - "Verifiable credentials integration (concept)"
+
+    business_value: |
+      High-stakes recommendation system with verification and audit trails. Use cases:
+      charity donations, financial transactions, medical recommendations. Provides
+      trust and transparency that AI recommendations are validated and traceable.
+
+    inspiration:
+      source: "Ayo Adedeji's Charity Advisor (AP2 Protocol)"
+      linkedin_post: "Three specialized agents handle discovery, verification, and payment"
+      key_insight: "When agents handle money, you need more than model capability - you need accountability"
+
+    architecture:
+      workflow: "analyzer → researcher → Parallel(verifier, risk_checker) → recommender → auditor"
+      agents:
+        - name: "analyzer_agent"
+          role: "Understand user intent and requirements"
+        - name: "researcher_agent"
+          role: "Find potential recommendations (charities, investments, etc)"
+        - name: "verification_agent"
+          role: "Verify legitimacy, credentials, track record"
+        - name: "risk_assessment_agent"
+          role: "Identify risks and red flags"
+        - name: "recommendation_agent"
+          role: "Generate ranked recommendations with reasoning"
+        - name: "audit_agent"
+          role: "Log decision trail, create audit record"
+
+    learning_objectives:
+      - "Implement verification and validation layers"
+      - "Create audit trails for critical decisions"
+      - "Handle high-stakes recommendation patterns"
+      - "Understand role separation for security"
+      - "Design for accountability and transparency"
+
+    key_concepts:
+      - title: "Verification"
+        description: "Independent validation of claims before recommendations"
+      - title: "Audit Trail"
+        description: "Complete log of decision-making process"
+      - title: "Role Separation"
+        description: "Different agents for discovery vs verification vs execution"
+      - title: "Transaction Logging"
+        description: "Traceable record of who authorized what action when"
+
+    exercises:
+      - id: "ex-9-1"
+        name: "Implement timestamp-based audit log"
+        task: "Each agent logs its decision with timestamp and reasoning"
+
+      - id: "ex-9-2"
+        name: "Add verification score"
+        task: "Verification agent assigns confidence score (0-100)"
+
+      - id: "ex-9-3"
+        name: "Create human approval gate"
+        task: "Pause workflow before final recommendation for human review"
+
+    success_criteria:
+      - "Recommendations are independently verified"
+      - "Complete audit trail is created"
+      - "Risk assessment influences final recommendations"
+      - "Can replay decision-making process from logs"
+      - "Human approval gate works correctly (optional)"
+
+    workshop_complete: |
+      🎉 WORKSHOP COMPLETE! You've built 9 production-ready AI agent patterns:
+
+      ✅ Single agents with custom tools
+      ✅ Sequential workflows for business processes
+      ✅ Parallel processing for multi-perspective analysis
+      ✅ Complex orchestration with role-based teams
+      ✅ Verification and audit patterns for high-stakes decisions
+
+      You're now ready to build enterprise AI agent systems!
+
+# ============================================================================
+# INSTRUCTOR GUIDE
+# ============================================================================
+
+instructor_notes:
+  time_management:
+    - "Each step has suggested duration - adjust based on student pace"
+    - "Exercises are optional - prioritize demos if time is tight"
+    - "Phases 1-2 are critical foundation, Phase 4 can be demos if needed"
+
+  git_workflow:
+    - "Start workshop at step-0-start tag (greeting_agent only)"
+    - "After each agent completion, tag the repo (step-N-agent-name)"
+    - "Students can checkout tags if they fall behind"
+    - "Final state is tagged as step-9-complete"
+
+  common_challenges:
+    - challenge: "Students new to async/await"
+      solution: "Emphasize that ADK handles async - they just define agents"
+
+    - challenge: "API key issues"
+      solution: "Have backup keys ready, test all keys before workshop"
+
+    - challenge: "Different paces"
+      solution: "Use git tags - fast students can jump ahead, slow can catch up"
+
+  demo_vs_hands_on:
+    phase_1: "50% hands-on, 50% demo"
+    phase_2: "70% demo, 30% hands-on (time saver)"
+    phase_3: "80% demo, 20% discussion"
+    phase_4: "90% demo, 10% Q&A (focus on architecture)"
+
+# ============================================================================
+# TESTING CHECKLIST
+# ============================================================================
+
+pre_workshop_checklist:
+  - "All 9 agents run successfully in Docker"
+  - "All 9 agents run successfully in IDX"
+  - "Git tags created for each step"
+  - "README.md created for each agent"
+  - "Exercises have solution code ready"
+  - "API keys tested and working"
+  - "Backup API keys available"
+  - "Streamlit UI works for all agents"
+  - "ADK Web shows all agents"
+  - "Auto-discovery working correctly"
+
+student_environment_checklist:
+  - "Google IDX workspace opens correctly"
+  - ".idx/start-services.sh runs without errors"
+  - "Port 3002 (ADK Web) accessible"
+  - "Port 8501 (Streamlit) accessible"
+  - "All agents visible in both UIs"
+  - "API key configured in .env"
+  - "Sample queries work for greeting_agent"

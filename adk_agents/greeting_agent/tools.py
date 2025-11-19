@@ -5,28 +5,30 @@ Demonstrates how to create simple Python functions as agent tools
 from datetime import datetime
 
 
-def get_workshop_info() -> dict:
-    """Get information about the current ADK workshop.
+def get_company_info() -> dict:
+    """Get information about the user's company and current AI initiative.
 
-    This tool provides details about the workshop including location,
-    date, duration, and topics covered.
+    This tool provides details about the organization and ongoing AI agent projects.
+
+    INSTRUCTOR NOTE: Students will customize this with their own company/project
+    information as their first hands-on exercise in the workshop.
 
     Returns:
-        dict: Workshop information including name, location, date, duration, and topics
+        dict: Company information including name, industry, and current AI initiatives
     """
     return {
-        "workshop_name": "Building Production AI Agents with Google ADK",
-        "event": "DevFest Atlanta 2025",
-        "date": "October 31, 2025",
-        "duration": "2 hours",
-        "location": "Atlanta, GA",
-        "topics": [
-            "ADK fundamentals",
-            "Multi-agent systems",
-            "Sequential and parallel patterns",
-            "FastAPI integration",
-            "Production deployment"
-        ]
+        "company_name": "Acme Corporation",
+        "industry": "Technology & Innovation",
+        "location": "San Francisco, CA",
+        "current_initiative": "Enterprise AI Agent Platform",
+        "use_cases": [
+            "Customer service automation",
+            "Financial analysis & reporting",
+            "Content creation pipelines",
+            "Software development assistance"
+        ],
+        "team_size": "12 engineers, 3 product managers",
+        "goal": "Deploy production-ready AI agents for enterprise workflows"
     }
 
 
@@ -51,33 +53,41 @@ def get_current_time() -> dict:
     }
 
 
-def list_available_agents() -> dict:
-    """List all available agents in this workshop.
+def get_workshop_roadmap() -> dict:
+    """Get the complete 9-agent workshop progression.
+
+    Shows all agents students will build, from foundation to production-grade systems.
 
     Returns:
-        dict: Information about available agents and their purposes
+        dict: Workshop roadmap with all 9 agents and their patterns
     """
     return {
-        "agents": [
+        "workshop_title": "Building Production AI Agents with ADK + FastAPI",
+        "total_agents": 9,
+        "duration": "4 hours",
+        "phases": [
             {
-                "name": "greeting_agent",
-                "type": "Single Agent",
-                "purpose": "Friendly workshop assistant with custom tools",
-                "demonstrates": "Basic agent + custom Python functions as tools"
+                "name": "Phase 1: Foundation",
+                "agents": ["greeting_agent"],
+                "pattern": "Single Agent"
             },
             {
-                "name": "news_pipeline",
-                "type": "Sequential Multi-Agent",
-                "purpose": "News analysis with 3-agent pipeline",
-                "demonstrates": "Sequential workflow, state passing, output_key usage"
+                "name": "Phase 2: Real Workflows",
+                "agents": ["customer_service", "content_pipeline", "medical_authorization"],
+                "pattern": "Sequential Workflows"
             },
             {
-                "name": "competitive_analysis",
-                "type": "Parallel Multi-Agent",
-                "purpose": "Competitive research with parallel execution",
-                "demonstrates": "Parallel agents, performance optimization, synthesis"
+                "name": "Phase 3: Intelligent Decision-Making",
+                "agents": ["financial_advisor", "brand_intelligence"],
+                "pattern": "Parallel + Synthesis"
+            },
+            {
+                "name": "Phase 4: Production-Grade Systems",
+                "agents": ["software_assistant", "project_management", "verified_recommendations"],
+                "pattern": "Complex Multi-Agent with Verification"
             }
         ],
-        "total_agents": 3,
-        "patterns_covered": ["Single", "Sequential", "Parallel + Synthesis"]
+        "current_step": 1,
+        "next_agent": "customer_service",
+        "progression_file": "workshop_progression.yaml"
     }
