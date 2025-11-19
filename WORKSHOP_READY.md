@@ -301,9 +301,61 @@ Each agent has 300-800 line comprehensive README with:
 
 ---
 
+## 🎁 BONUS: Masterclass Preview Content
+
+**NEW:** Added `BONUS_CONTENT.md` - Optional 15-20 minute section!
+
+### What's Included:
+
+#### 1. Gemini Built-In Tools (5 min demo)
+- Google Search tool (real-time web search)
+- Code Execution tool (calculations, charts)
+- BigQuery tools (natural language → SQL)
+- Demo: Add google_search to content_pipeline
+
+#### 2. Multi-Model Strategies (5 min demo)
+- OpenAI GPT-4o via LiteLLM
+- Anthropic Claude for long context
+- Ollama for local/privacy
+- Demo: Switch greeting_agent to different model
+
+#### 3. Production Deployment (5 min preview)
+- Cloud Run (easiest)
+- GKE (enterprise)
+- Agent Engine (managed)
+- Demo: Show deployment command
+
+#### 4. Enterprise Features (5 min teaser)
+- Apigee AI Gateway (governance, security)
+- BigQuery audit logging
+- Cost optimization (semantic caching)
+- Demo: Apigee policy configuration
+
+### Masterclass Teaser
+
+**Full Day Workshop (6-8 hours):**
+- Module 1: Advanced Built-In Tools (hands-on)
+- Module 2: Multi-Model Orchestration (cost optimization)
+- Module 3: Production Deployment (Cloud Run + GKE)
+- Module 4: Enterprise Patterns (compliance, monitoring)
+
+**Outcomes:**
+- Deploy agents to production with full observability
+- Build intelligent multi-model orchestrator
+- Implement enterprise audit trails
+- Production-ready systems
+
+**Quick Wins Students Can Try Today:**
+- Add google_search to research agents (2 min)
+- Enable code_executor for calculations (2 min)
+- Try OpenAI or Claude (5 min)
+
+---
+
 ## 🎯 Ready for Thursday!
 
 All agents committed, tagged, and pushed to main.
+Bonus content ready for masterclass teaser.
 Everything is ready for your review tomorrow morning.
 
 Sleep well! 🌙
