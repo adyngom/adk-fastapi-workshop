@@ -35,96 +35,49 @@
 
     # Workspace configuration
     workspace = {
-      # Auto-install Python dependencies on workspace load
-      # Note: If this fails, students can run ./.idx/manual-setup.sh
+      # Open welcome file and show setup instructions
+      # Manual setup is the PRIMARY path (reliable, interactive API key)
       onCreate = {
-        install-deps = ''
-          set -e  # Exit on error
-          echo "🔧 Setting up Python environment..."
+        default.openFiles = ["STUDENT_SETUP_CHECKLIST.md"];
 
-          python -m venv .venv || {
-            echo "❌ Failed to create virtual environment"
-            echo "💡 Run: ./.idx/manual-setup.sh"
-            exit 1
-          }
-
-          source .venv/bin/activate
-
-          pip install --upgrade pip --quiet || {
-            echo "⚠️ pip upgrade failed, continuing..."
-          }
-
-          # Install ADK first (primary use case)
-          pip install -r requirements-adk.txt --quiet || {
-            echo "❌ Failed to install ADK requirements"
-            echo "💡 Run: ./.idx/manual-setup.sh"
-            exit 1
-          }
-
-          # Then add FastAPI without version constraints (avoid Starlette conflicts)
-          pip install fastapi uvicorn python-multipart websockets redis pydantic-settings --quiet || {
-            echo "⚠️ FastAPI installation had issues, continuing..."
-          }
-
-          echo "✅ Dependencies installed successfully"
-        '';
-
-        # Create .env from template if not exists
-        setup-env = ''
-          if [ ! -f .env ]; then
-            cp .env.template .env
-            echo "📝 Created .env file from template"
-            echo "⚠️  IMPORTANT: Add your GOOGLE_API_KEY to .env"
-            echo "   Get key: https://aistudio.google.com/apikey"
-          else
-            echo "✅ .env file already exists"
-          fi
-        '';
-
-        # Show recovery instructions if onCreate fails
-        show-recovery = ''
+        show-welcome = ''
           echo ""
-          echo "═══════════════════════════════════════════════════════"
-          echo "🚀 ADK Workshop Setup"
-          echo "═══════════════════════════════════════════════════════"
+          echo "╔════════════════════════════════════════════════════════╗"
+          echo "║                                                        ║"
+          echo "║       🚀 Welcome to ADK + FastAPI Workshop! 🚀         ║"
+          echo "║                                                        ║"
+          echo "╚════════════════════════════════════════════════════════╝"
           echo ""
-          echo "If onCreate didn't complete, run:"
-          echo "  ./.idx/manual-setup.sh"
+          echo "📋 Quick Setup (5 minutes total):"
           echo ""
-          echo "Then start services:"
-          echo "  ./.idx/start-services.sh"
+          echo "   1️⃣  Run setup script:"
+          echo "      ./.idx/manual-setup.sh"
           echo ""
-          echo "Need help? See: .idx/TROUBLESHOOTING.md"
-          echo "═══════════════════════════════════════════════════════"
+          echo "   2️⃣  Run start script:"
+          echo "      ./.idx/start-services.sh"
+          echo ""
+          echo "   3️⃣  Access Streamlit UI (port 8501)"
+          echo ""
+          echo "📖 See STUDENT_SETUP_CHECKLIST.md (now open) for details"
+          echo ""
+          echo "════════════════════════════════════════════════════════"
           echo ""
         '';
       };
 
       # Commands to run when workspace starts
       onStart = {
-        # Start all services using the startup script
-        # This ensures proper venv activation and PYTHONPATH setup
-        start-services = ''
-          # Check if manual setup was needed
+        # Show reminder if setup not complete
+        check-setup = ''
           if [ ! -d ".venv" ]; then
-            echo "⚠️  Virtual environment not found"
-            echo "💡 Run: ./.idx/manual-setup.sh"
-            echo "💡 Then: ./.idx/start-services.sh"
-            exit 0
+            echo ""
+            echo "⚠️  Setup not complete yet!"
+            echo ""
+            echo "Run these 2 commands:"
+            echo "  1. ./.idx/manual-setup.sh"
+            echo "  2. ./.idx/start-services.sh"
+            echo ""
           fi
-
-          # Check if API key configured
-          if [ ! -f ".env" ] || ! grep -q "GOOGLE_API_KEY=AIza" .env 2>/dev/null; then
-            echo "⚠️  API key not configured"
-            echo "💡 Add your GOOGLE_API_KEY to .env"
-            echo "💡 Get key: https://aistudio.google.com/apikey"
-            echo "💡 Then run: ./.idx/start-services.sh"
-            exit 0
-          fi
-
-          # All good, start services
-          echo "🚀 Starting workshop services..."
-          ./.idx/start-services.sh
         '';
       };
     };

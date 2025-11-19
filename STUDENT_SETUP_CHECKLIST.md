@@ -20,7 +20,8 @@ Click this button to open the workshop in your browser:
 - Prompts you to sign in with Google (if not logged in)
 - Opens Google IDX (browser-based development environment)
 - Automatically clones the workshop repository
-- Starts installing dependencies (watch the progress bar)
+- Opens STUDENT_SETUP_CHECKLIST.md (this file!)
+- Shows welcome message with setup instructions
 
 **If the button doesn't work**:
 1. Go to https://idx.google.com
@@ -33,16 +34,19 @@ Click this button to open the workshop in your browser:
 
 ## ✅ Step 2: Run Setup Script (2 minutes)
 
-**In the IDX terminal** (bottom of screen), run:
+**You'll see a welcome message in the terminal.** Now run the setup script.
+
+**In the IDX terminal** (bottom of screen), type this command and press Enter:
 
 ```bash
 ./.idx/manual-setup.sh
 ```
 
 **The script will**:
-1. Create Python environment
-2. Install Google ADK and dependencies (~90 seconds)
-3. **Prompt you for API key** (next step)
+1. Create Python virtual environment
+2. Install Google ADK 1.18 and Streamlit (~90 seconds)
+3. Install FastAPI and supporting libraries
+4. **Prompt you for API key** (next step - have it ready!)
 
 ---
 
