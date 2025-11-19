@@ -25,10 +25,5 @@ synthesizer = Agent(
 root_agent = SequentialAgent(
     name="project_management_team",
     description="A team of AI agents that creates comprehensive project plans.",
-    #sub_agents=[task_breakdown, parallel_analysis, synthesizer],
-    tools=[
-        AgentTool(agent=task_breakdown),
-        AgentTool(agent=parallel_analysis),
-        AgentTool(agent=synthesizer) 
-    ]
+    sub_agents=[task_breakdown, parallel_analysis, synthesizer]
 )
