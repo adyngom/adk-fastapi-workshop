@@ -100,23 +100,24 @@ services:
       - adk-network
     restart: unless-stopped
 
-  # Streamlit Chat Interface (Optional)
-  streamlit-chat:
+  # Streamlit Workshop UI (Self-contained, no FastAPI dependency)
+  streamlit-workshop:
     build:
       context: .
-      dockerfile: Dockerfile.streamlit
+      dockerfile: Dockerfile.streamlit.workshop
     container_name: adk-workshop-streamlit
     ports:
       - "8501:8501"
+    env_file: .env
     environment:
-      - API_URL=http://api:8000
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
     volumes:
       - ./streamlit_apps:/app/streamlit_apps
-    depends_on:
-      - api
+      - ./adk_agents:/app/adk_agents
     networks:
       - adk-network
     restart: unless-stopped
+    command: streamlit run streamlit_apps/workshop_ui/app.py --server.port 8501 --server.address 0.0.0.0
     profiles:
       - streamlit  # Start with: docker compose --profile streamlit up
 
