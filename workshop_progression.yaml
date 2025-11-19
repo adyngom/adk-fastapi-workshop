@@ -40,6 +40,22 @@ progression:
         - "Testing with ADK Web UI"
         - "Voice input (1.18 feature)"
 
+    adk_118_features:
+      visual_agent_builder:
+        available: true
+        usage: "After building in code, instructor demos Visual Agent Builder as alternative approach"
+        benefit: "Shows AI assistant that writes agent YAML from natural language"
+      run_debug_helper:
+        available: true
+        usage: "Quick testing without full ADK Web setup"
+        code_example: |
+          from google.adk import run_debug
+          run_debug(root_agent, "What time is it?")
+      voice_input:
+        available: true
+        model_required: "gemini-2.0-flash-exp or gemini-2.0-flash-live"
+        usage: "Click microphone in ADK Web UI (1.18+)"
+
     business_value: |
       Foundation pattern for all agents. Learn core ADK concepts through a friendly
       assistant that demonstrates tool calling, instruction prompts, and testing.
@@ -125,6 +141,25 @@ progression:
         - "State passing between agents"
         - "output_key for data flow"
         - "Sub-agent composition"
+
+    adk_118_features:
+      visual_agent_builder:
+        available: true
+        usage: "Instructor demo: Build sequential workflow using Visual Agent Builder"
+        benefit: "Natural language → 3-agent pipeline without writing Python code"
+      run_debug_helper:
+        available: true
+        usage: "Test individual sub-agents before composing full workflow"
+        code_example: |
+          # Test triage agent alone first
+          run_debug(triage_agent, "Customer can't login after password reset")
+      callback_management:
+        available: true
+        usage: "Log each sequential step for debugging"
+        code_example: |
+          # Add callbacks to track workflow progress
+          def after_agent_callback(agent_name, result):
+              print(f"✓ {agent_name} completed: {result}")
 
     business_value: |
       Automate customer support tickets with a 3-step workflow: triage priority,
@@ -463,6 +498,38 @@ progression:
         - "GitHub integration"
         - "Stack Overflow tool usage"
 
+    adk_118_features:
+      mcp_toolbox:
+        available: true
+        new_in_118: true
+        usage: "MCP Toolbox for Databases - PostgreSQL integration with vector search"
+        code_example: |
+          from google.adk.tools import McpToolset
+
+          # Connect to MCP Toolbox server
+          mcp_tools = McpToolset(
+              server_url="http://localhost:5000",
+              toolset_name="database_tools"
+          )
+      mcp_instruction_provider:
+        available: true
+        new_in_118: true
+        usage: "McpInstructionProvider for better prompts (line 24 of changelog)"
+        benefit: "Improved MCP tool descriptions and context"
+      github_mcp_server:
+        available: true
+        usage: "Remote GitHub MCP server for fetching issues/PRs"
+        code_example: |
+          # GitHub MCP server integration
+          github_tools = McpToolset(
+              server_url="https://github-mcp.example.com",
+              auth_token=os.getenv("GITHUB_PERSONAL_ACCESS_TOKEN")
+          )
+      langchain_tools:
+        available: true
+        usage: "StackOverflow API via LangChain tools integration"
+        benefit: "ADK supports third-party tool libraries"
+
     business_value: |
       IT Support and developer assistance. Triage bugs → search knowledge base →
       find similar issues → generate solution. Engineering teams ship faster.
@@ -533,6 +600,32 @@ progression:
         - "Agent specialization patterns"
         - "Comprehensive output synthesis"
 
+    adk_118_features:
+      agent_to_a2a:
+        available: true
+        new_in_117: true
+        usage: "Turn agents into tools for other agents (Agent-to-Agent communication)"
+        code_example: |
+          from google.adk.integrations import agent_to_a2a
+
+          # Convert specialized agent into a tool
+          tech_analyzer_tool = agent_to_a2a(technical_analyzer_agent)
+
+          # PM agent can now call tech analyzer as a tool
+          pm_agent = Agent(
+              name="pm_coordinator",
+              tools=[tech_analyzer_tool, resource_planner_tool]
+          )
+        benefit: "Agents can delegate complex tasks to specialized sub-agents"
+      custom_runner:
+        available: true
+        usage: "Inject custom Runner into agent_to_a2a for advanced control"
+        benefit: "Fine-grained control over agent execution context"
+      callback_management:
+        available: true
+        usage: "Comprehensive callbacks for before/after agent, model, and tool calls"
+        benefit: "Full observability into complex multi-agent orchestration"
+
     business_value: |
       Project planning automation. Break down project → parallel analysis (tech, resources,
       risks) → synthesize comprehensive plan. PM teams create plans in minutes vs days.
@@ -593,6 +686,50 @@ progression:
         - "Transaction logging for accountability"
         - "Security patterns for high-stakes decisions"
         - "Verifiable credentials integration (concept)"
+
+    adk_118_features:
+      ap2_inspired_patterns:
+        available: true
+        inspiration: "Ayo Adedeji's charity advisor using Agent Payments Protocol"
+        usage: "When agents handle money/high-stakes decisions, implement accountability"
+        key_principles:
+          - "Role separation: discovery ≠ verification ≠ execution"
+          - "Every decision has a verifiable audit trail"
+          - "Timestamps and reasoning for each step"
+          - "Human approval gates for critical actions"
+      bigquery_logging:
+        available: true
+        new_in_118: true
+        usage: "BigQueryLoggingPlugin for event logging to BigQuery (line 55 of changelog)"
+        code_example: |
+          from google.adk.observability import BigQueryLoggingPlugin
+
+          # Log all agent decisions to BigQuery for audit
+          logging_plugin = BigQueryLoggingPlugin(
+              project_id="my-project",
+              dataset="agent_audit_logs",
+              table="verified_recommendations"
+          )
+        benefit: "Enterprise-grade audit trails in queryable database"
+      callback_management:
+        available: true
+        usage: "Log every agent decision, tool call, and state change"
+        code_example: |
+          def audit_callback(event_type, agent_name, data):
+              # Log to blockchain or immutable audit log
+              audit_log.append({
+                  "timestamp": datetime.now(),
+                  "agent": agent_name,
+                  "action": event_type,
+                  "data": data,
+                  "hash": calculate_hash(data)
+              })
+        benefit: "Cryptographically verifiable decision trails"
+      session_rewind:
+        available: true
+        new_in_117: true
+        usage: "Ability to rewind session to before a previous invocation (line 110)"
+        benefit: "Replay decisions for auditing and debugging"
 
     business_value: |
       High-stakes recommendation system with verification and audit trails. Use cases:
