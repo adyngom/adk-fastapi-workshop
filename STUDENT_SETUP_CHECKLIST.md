@@ -1,12 +1,41 @@
 # Pre-Workshop Setup Checklist
 
-**ADK Workshop - Thursday**
+**ADK Deep Dive Workshop - Thursday, 12pm EST**
 
-**⏰ Complete this BEFORE the workshop** (takes 5 minutes)
+**⏰ Complete this BEFORE the workshop** (takes ~10 minutes)
 
 ---
 
-## ✅ Step 1: Open in Google IDX (1 minute)
+## ✅ Step 1: Register (2 minutes) - REQUIRED
+
+**If you haven't already registered**, complete the registration form:
+
+**🔗 https://register.adyngom.com/adk-deep-dive-step-2**
+
+This registration is required for workshop access and materials.
+
+**✅ Already registered?** Skip to Step 2!
+
+---
+
+## ✅ Step 2: Get Google Cloud Credits (3 minutes) - REQUIRED
+
+You'll need Google Cloud credits for the workshop. Get them here (no credit card required):
+
+**🔗 https://trygcp.dev/claim/gdg-other-deep-dive-agent-developer-kit-adk-w-ady-ngom**
+
+**What this provides:**
+- Free Google Cloud credits (enough for workshop + practice)
+- No credit card required
+- Coupon code included in the process
+
+**Alternative:** If you already have a GCP billing account set up, you can use that instead.
+
+**Note:** The setup video (sent with registration confirmation) shows how to claim credits.
+
+---
+
+## ✅ Step 3: Open in Google IDX (1 minute)
 
 **Prerequisites:**
 - Google account (free) - IDX requires Google login
@@ -32,7 +61,7 @@ Click this button to open the workshop in your browser:
 
 ---
 
-## ✅ Step 2: Run Setup Script (2 minutes)
+## ✅ Step 4: Run Setup Script (2 minutes)
 
 **You'll see a welcome message in the terminal.** Now run the setup script.
 
@@ -50,7 +79,7 @@ Click this button to open the workshop in your browser:
 
 ---
 
-## ✅ Step 3: Get Your Google API Key (1 minute)
+## ✅ Step 5: Get Your Google API Key (1 minute)
 
 When the script prompts for API key:
 
@@ -64,7 +93,7 @@ The script validates and saves it automatically!
 
 ---
 
-## ✅ Step 4: Start Services (30 seconds)
+## ✅ Step 6: Start Services (30 seconds)
 
 Still in the IDX terminal, run:
 
@@ -82,7 +111,7 @@ Frontend PID: XXXX
 
 ---
 
-## ✅ Step 5: Access the Workshop UI (30 seconds)
+## ✅ Step 7: Access the Workshop UI (30 seconds)
 
 1. **Look for port notifications** (bottom-right) or click **"Ports"** panel (bottom)
 2. **Find port 8501**
@@ -104,7 +133,7 @@ Frontend PID: XXXX
 
 ---
 
-## ✅ Step 6: Test It Works (1 minute)
+## ✅ Step 8: Test It Works (1 minute)
 
 **In the Streamlit UI**:
 
@@ -185,9 +214,18 @@ streamlit run streamlit_apps/workshop_ui/app.py --server.port 8501 --server.addr
 
 ## 📅 Workshop Day (Thursday)
 
+**📺 YouTube Live Stream:** https://youtube.com/live/g0eFWykP9DQ
+
+**Time:** 12:00 PM EST (sharp start!)
+**Arrive:** 11:45 AM EST (15 minutes early for setup checks)
+**Duration:** 4 hours (9 agents total)
+
 **What to have ready**:
-- IDX workspace open (from setup)
-- Streamlit UI accessible (port 8501)
+- [ ] Registration complete
+- [ ] Google Cloud credits claimed
+- [ ] IDX workspace open (from setup above)
+- [ ] Streamlit UI accessible (port 8501)
+- [ ] Test query working ("What time is it?")
 
 **We'll cover**:
 - Foundation: Single agents with custom tools (Step 1)
@@ -195,9 +233,6 @@ streamlit run streamlit_apps/workshop_ui/app.py --server.port 8501 --server.addr
 - Intelligent Decision-Making: Parallel execution (Steps 5-6)
 - Production Systems: MCP, orchestration, verification (Steps 7-9)
 - BONUS: Built-in tools, multi-model strategies, deployment
-
-**Time**: [Insert time]
-**Duration**: 4 hours (9 agents total)
 
 ---
 
