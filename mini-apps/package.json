@@ -1,0 +1,29 @@
+{
+  "name": "adk-mini-apps-monorepo",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "_shared",
+    "01-greeting-chat",
+    "02-customer-service",
+    "03-content-studio",
+    "04-financial-dashboard",
+    "05-brand-intel-hub",
+    "06-knowledge-base",
+    "07-dev-assistant",
+    "08-project-planner",
+    "09-verification-portal",
+    "10-agent-ops-dashboard"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=",
+    "dev:greeting": "npm run dev --workspace=01-greeting-chat",
+    "dev:customer": "npm run dev --workspace=02-customer-service",
+    "dev:financial": "npm run dev --workspace=04-financial-dashboard",
+    "build:all": "npm run build --workspaces",
+    "install:all": "npm install --workspaces"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}
