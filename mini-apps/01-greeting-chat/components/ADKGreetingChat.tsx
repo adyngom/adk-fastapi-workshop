@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { Send, Mic, MicOff, ChevronDown, ChevronUp, Copy, Trash2, Menu, X, Check } from 'lucide-react';
 
