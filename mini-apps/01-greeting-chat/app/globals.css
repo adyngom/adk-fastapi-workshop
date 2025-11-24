@@ -3,19 +3,12 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-  }
-
   * {
-    @apply border-border;
+    @apply border-gray-200;
   }
 
   body {
-    @apply bg-gray-50 text-foreground;
+    @apply bg-gray-50 text-gray-900;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
